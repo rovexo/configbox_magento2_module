@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="catalog_product_option_price_configuration_after">
+        <observer name="cb_pricing" instance="Rovexo\Configbox\Observer\CbPrice"/>
+    </event>
+</config>

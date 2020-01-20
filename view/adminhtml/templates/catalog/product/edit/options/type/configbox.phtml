@@ -1,0 +1,14 @@
+<script id="custom-option-rovexo-type-template" type="text/x-magento-template">
+    <div id="product_option_<%- data.option_id %>_type_<%- data.group %>" class="fieldset">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th class="type-configbox"><?php /* @escapeNotVerified */ echo __(' Select Configbox Product to Associate') ?></th>
+            </tr>
+            </thead>
+            <tr>
+                <td class="opt-configbox"><?php echo $block->getCbProductHtml() ?></td>
+            </tr>
+        </table>
+    </div>
+</script>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+
+        <referenceBlock name="product.info.options">
+            <block class="Rovexo\Configbox\Block\Product\View\Options\Type\ConfigboxConfigurator" name="product.info.options.configbox" as="configbox" template="Rovexo_Configbox::product/view/options/type/configbox-configurator.phtml"/>
+        </referenceBlock>
+
+        <referenceBlock name="product.info.media">
+            <block class="Rovexo\Configbox\Block\Product\View\Renderer\Visualization" name="configbox.visualization" as="visualization" template="Rovexo_Configbox::product/view/renderer/visualization.phtml" />
+        </referenceBlock>
+
+        <referenceBlock name="before.body.end">
+            <block name="configbox.assets" as="configbox-assets" template="Rovexo_Configbox::assets.phtml" />
+        </referenceBlock>
+
+    </body>
+</page>

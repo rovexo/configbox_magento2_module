@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Catalog:etc/product_options.xsd">
+    <option name="rovexo" label="Rovexo" renderer="Rovexo\Configbox\Block\Adminhtml\Product\Edit\Tab\Options\Type\ConfigBox">
+        <inputType name="configbox" label="ConfigBox Configuration" />
+    </option>
+</config>

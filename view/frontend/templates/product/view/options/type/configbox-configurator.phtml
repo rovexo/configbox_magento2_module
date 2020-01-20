@@ -1,0 +1,30 @@
+<?php
+/** @var $block Rovexo\Configbox\Block\Product\View\Options\Type\ConfigboxConfigurator */
+// This got to be called on any configurator page block
+$block->prepare();
+
+$pageId = $block->getPageId();
+$positionId = $block->getCartPositionId();
+$option = $block->getOption();
+$optionId = intval($option->getId());
+
+/**
+ * The hidden text field below accommodates two things:
+ * - validation on 'add to cart' (see configbox/configurator::initMagento2Validation())
+ * - M2 product total price modifications on page init
+ *
+ */
+?>
+
+<input type="text"
+       style="display:block;border:none;width:0;height:0;position:absolute;left:-3000px;"
+       id="options_<?= $optionId; ?>_text"
+       name="options[<?= $optionId; ?>]"
+       class="input-text product-custom-option"
+       data-selector="options[<?= $optionId; ?>]"
+       data-validate="{configbox_m2_validation: true}"
+       value="dummy value" />
+
+<div id="wrapper-cb-option" data-option-id="<?= $optionId; ?>">
+	<?php KenedoView::getView('ConfigboxViewConfiguratorpage')->setCartPositionId($positionId)->setPageId($pageId)->display();?>
+</div>

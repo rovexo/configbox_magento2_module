@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions">
+        <plugin name="configbox_custom_options" type="Rovexo\Configbox\Plugin\Ui\DataProvider\Product\Form\Modifier\CustomOptionsPlugin" />
+    </type>
+
+    <type name="Magento\Catalog\Ui\DataProvider\Product\ProductCustomOptionsDataProvider">
+        <plugin name="configbox_import_options_provider" type="Rovexo\Configbox\Plugin\Ui\DataProvider\Product\ProductCustomOptionsDataProviderPlugin" />
+    </type>
+
+    <type name="Magento\Catalog\Model\Product\Option">
+        <plugin name="configbox_custom_options_renderer" type="Rovexo\Configbox\Plugin\Catalog\Product\Option" />
+    </type>
+
+    <type name="Magento\Quote\Model\Quote">
+        <plugin name="configbox_quote" type="Rovexo\Configbox\Plugin\Quote" />
+    </type>
+
+    <type name="Magento\Wishlist\Model\Wishlist">
+        <plugin name="configbox_wishlist" type="Rovexo\Configbox\Plugin\Wishlist" />
+    </type>
+</config>

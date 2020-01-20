@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Rovexo_Configbox::configbox" title="Configbox" translate="title" module="Rovexo_Configbox"
+             sortOrder="25" resource="Rovexo_Configbox::configbox"/>
+        <add id="Rovexo_Configbox::administration" title="Administration" translate="title"
+             module="Rovexo_Configbox"
+             sortOrder="10" action="configbox/admin/index" resource="Rovexo_Configbox::administration"
+             parent="Rovexo_Configbox::configbox"/>
+    </menu>
+</config>

@@ -1,0 +1,37 @@
+<?php
+/** @var $block Rovexo\Configbox\Block\Product\View\Renderer\Visualization */
+// This got to be called on any configurator page block
+if ($block->hasCbCustomOption()) {
+    $block->prepare();
+    $pageId = KRequest::getInt('page_id');
+    $output = "";
+
+    if ($pageId) {
+        $positionId = ConfigboxConfiguration::getInstance()->getPositionId();
+
+        $ass = ConfigboxCacheHelper::getAssignments();
+        $productId = !empty($ass['page_to_product'][$pageId]) ? $ass['page_to_product'][$pageId] : 0;
+
+        $productModel = KenedoModel::getModel('ConfigboxModelProduct');
+        $pageModel = KenedoModel::getModel('ConfigboxModelConfiguratorpage');
+
+        // Get the product
+        $product = $productModel->getProduct($productId);
+
+        if ($product->visualization_type == 'shapediver') {
+            $shapeDiverView = KenedoView::getView('ConfigboxViewSdvisualization');
+            $shapeDiverView->setProductId($productId)->setPositionId($positionId);
+            $output = $shapeDiverView->getHtml();
+        } elseif ($product->visualization_type == 'composite' && ConfigboxProductImageHelper::hasProductImage($positionId)) {
+            $visualizationView = KenedoView::getView('ConfigboxViewBlockvisualization');
+            $visualizationView->setPositionId($positionId);
+            $output = $visualizationView->getHtml();
+        } ?>
+        <div class="block block-list block-visualization">
+            <div class="block-content">
+                <?php echo $output; ?>
+            </div>
+        </div>
+        <?php
+    }
+}

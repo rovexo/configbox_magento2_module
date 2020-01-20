@@ -1,0 +1,37 @@
+<?php /** @var $block \Rovexo\Configbox\Block\Adminhtml\CbLicenseValidator */ ?>
+<?php if ($block->isAdminLoggedIn() && $block->isCbLicenseExpired()): ?>
+    <div class="alert-modal-content">
+        <p>Your ConfigBox license is expired. You cannot use ConfigBox products till a valid license is entered.</p>
+    </div>
+
+    <script>
+        require([
+            'jquery',
+            'Magento_Ui/js/modal/alert'
+        ], function ($, alert) {
+            'use strict';
+
+            alert({
+                title: 'ConfigBox License Expired',
+                content: $('.alert-modal-content'),
+                modalClass: 'alert',
+                buttons: [
+                    {
+                        text: $.mage.__('Ignore'),
+                        class: 'action ignore',
+                        click: function () {
+                            this.closeModal(true);
+                        }
+                    },
+                    {
+                        text: $.mage.__('Enter New License'),
+                        class: 'action primary new-license',
+                        click: function () {
+                            window.location = "<?= $block->getLicenseUrl() ?>";
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+<?php endif; ?>
