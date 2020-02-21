@@ -8,6 +8,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Filesystem\Driver\File;
+use Rovexo_Configbox_KenedoLoader as KenedoLoader;
 
 /**
  * Class Recurring
@@ -76,6 +77,23 @@ class Recurring implements InstallSchemaInterface
                 new \Magento\Framework\Phrase("\nThe directory 'lib/web/rovexo' could not be recreated. Please make sure this dir is writable and run setup:upgrade again.")
             );
         }
+
+        // Set an area code (there's none when this runs via magento module:upgrade)
+		// and the lacking area code makes URL generation fail.
+		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		$state =  $objectManager->get('Magento\Framework\App\State');
+
+		try {
+			$state->getAreaCode();
+		}
+		catch (\Exception $e) {
+			$state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
+		}
+
+		// Init Kenedo (which leads to CB's upgrade helper running and setting up the tables)
+		$kenedo = new KenedoLoader();
+		$kenedo->initKenedo();
+
     }
 
     /**
