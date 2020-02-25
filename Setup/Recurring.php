@@ -51,34 +51,60 @@ class Recurring implements InstallSchemaInterface
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
     ) {
-        $sourceDir = $this->directoryList->getRoot() . DIRECTORY_SEPARATOR .
-            "vendor" . DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR .
-            "configbox-php" . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR .
-            "Rovexo" . DIRECTORY_SEPARATOR . "Configbox" . DIRECTORY_SEPARATOR .
-            "assets";
+    	$this->_copyLibAssets();
+    	$this->_applyCbUpgrades($setup);
 
-        $targetDir = $this->directoryList->getPath(DirectoryList::LIB_WEB) .
-            DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR . "configbox" .
-            DIRECTORY_SEPARATOR . "assets";
+	}
 
-        //  During development, it will be symlink and not a directory
-        try {
-            if (!is_link($targetDir)) {
-                if ($this->file->isExists($targetDir)) {
-                    $this->file->deleteDirectory($targetDir);
-                }
+	/**
+	 * Copies the CB lib's assets dir to M2's accessible lib/web dir
+	 * @throws FileSystemException
+	 */
+	private function _copyLibAssets() {
 
-                $this->file->createDirectory($targetDir, 0775);
+		$sourceDir = $this->directoryList->getRoot() . DIRECTORY_SEPARATOR .
+			"vendor" . DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR .
+			"configbox-php" . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR .
+			"Rovexo" . DIRECTORY_SEPARATOR . "Configbox" . DIRECTORY_SEPARATOR .
+			"assets";
 
-                $this->_copyDirectory($sourceDir, $targetDir);
-            }
-        } catch (FileSystemException $e) {
-            throw new FileSystemException(
-                new \Magento\Framework\Phrase("\nThe directory 'lib/web/rovexo' could not be recreated. Please make sure this dir is writable and run setup:upgrade again.")
-            );
-        }
+		$targetDir = $this->directoryList->getPath(DirectoryList::LIB_WEB) .
+			DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR . "configbox" .
+			DIRECTORY_SEPARATOR . "assets";
 
-        // Set an area code (there's none when this runs via magento module:upgrade)
+		// On development we use a symlink - if we got one, we ignore the rest
+		if (is_link($targetDir)) {
+			return;
+		}
+
+		// Try removing the existing dir and copying it fresh
+		try {
+
+			if ($this->file->isExists($targetDir)) {
+				$this->file->deleteDirectory($targetDir);
+			}
+
+			$this->file->createDirectory($targetDir);
+			$this->_copyDirectory($sourceDir, $targetDir);
+
+		}
+		catch (FileSystemException $e) {
+
+			throw new FileSystemException(
+				new \Magento\Framework\Phrase("\nThe directory 'lib/web/rovexo' could not be recreated. Please make sure this dir is writable and run setup:upgrade again.")
+			);
+
+		}
+
+	}
+
+	/**
+	 * Trigger's CB's upgrade process (using M2's setup connection)
+	 * @param SchemaSetupInterface $setup SchemaSetup object
+	 */
+	private function _applyCbUpgrades($setup) {
+
+		// Set an area code (there's none when this runs via magento module:upgrade)
 		// and the lacking area code makes URL generation fail.
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$state =  $objectManager->get('Magento\Framework\App\State');
@@ -87,14 +113,18 @@ class Recurring implements InstallSchemaInterface
 			$state->getAreaCode();
 		}
 		catch (\Exception $e) {
-			$state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
+			$state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
 		}
+
+		$connection = $setup->getConnection();
 
 		// Init Kenedo (which leads to CB's upgrade helper running and setting up the tables)
 		$kenedo = new KenedoLoader();
 		$kenedo->initKenedo();
+		$kenedo->changeDbConnection($connection);
+		$kenedo->applyUpdates();
 
-    }
+	}
 
     /**
      * Copy directory
@@ -111,7 +141,7 @@ class Recurring implements InstallSchemaInterface
 
         // Make the destination directory if not exist
         if (!file_exists($dst)) {
-            $this->file->createDirectory($dst, 0775);
+            $this->file->createDirectory($dst);
         }
 
         // Loop through the files in source directory
