@@ -9,7 +9,6 @@ use KenedoObserver;
 use KenedoPlatform;
 use KRequest;
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 
@@ -24,16 +23,6 @@ use Magento\Framework\Controller\ResultInterface;
  */
 class Index extends Action
 {
-
-    /**
-     * Index constructor.
-     *
-     * @param Context $context Context object
-     */
-    public function __construct(Context $context)
-    {
-        parent::__construct($context);
-    }
 
     /**
      * The main execute() method
@@ -108,7 +97,7 @@ class Index extends Action
                 $controller->redirect();
             } else {
                 // Send output through observers
-                KenedoObserver::triggerEvent('onBeforeRender', [&$output]);
+                KenedoObserver::triggerEvent('onBeforeRender', array(&$output));
 
                 // Render the output
                 ob_start();

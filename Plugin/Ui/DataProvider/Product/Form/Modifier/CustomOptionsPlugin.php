@@ -27,11 +27,11 @@ class CustomOptionsPlugin
     const TYPE_CONFIG_BOX = 'configbox';
     const TYPE_OPTION_NAME = 'rovexo';
 
-    protected $configBoxOptions;
+    protected $_configBoxOptions;
 
-    protected $locator;
+    protected $_locator;
 
-    protected $prepareModel;
+    protected $_prepareModel;
 
     /**
      * CustomOptionsPlugin constructor.
@@ -45,9 +45,9 @@ class CustomOptionsPlugin
         LocatorInterface $locator,
         Prepare $prepareModel
     ) {
-        $this->configBoxOptions = $configBoxOptions;
-        $this->locator = $locator;
-        $this->prepareModel = $prepareModel;
+        $this->_configBoxOptions = $configBoxOptions;
+        $this->_locator = $locator;
+        $this->_prepareModel = $prepareModel;
     }
 
     /**
@@ -60,19 +60,20 @@ class CustomOptionsPlugin
      */
     public function afterModifyData(CustomOptions $subject, $result)
     {
-        $productId = $this->locator->getProduct()->getId();
+        $productId = $this->_locator->getProduct()->getId();
         $previousOptions = $result[$productId]['product']['options'];
         if ($previousOptions) {
             foreach ($previousOptions as $index => $option) {
                 if ($option['type'] == static::TYPE_CONFIG_BOX) {
                     $cbProductId = $this->_getCbProductId($productId);
                     if ($cbProductId) {
-                        // phpcs:ignore
-                        $result[$productId]['product']['options'][$index][static::FIELD_CONFIG_BOX_SELECT] = $cbProductId;
+                        $result[$productId]['product']['options']
+                        [$index][static::FIELD_CONFIG_BOX_SELECT] = $cbProductId;
                     }
                 }
             }
         }
+
         return $result;
     }
 
@@ -86,26 +87,31 @@ class CustomOptionsPlugin
      */
     public function afterModifyMeta(CustomOptions $subject, $result)
     {
-        $configBoxOption = [
-            static::TYPE_OPTION_NAME => [
-                'values' => [static::TYPE_CONFIG_BOX],
-                'indexes' => [
+        $configBoxOption = array(
+            static::TYPE_OPTION_NAME => array(
+                'values' => array(static::TYPE_CONFIG_BOX),
+                'indexes' => array(
                     static::GRID_TYPE_CONFIG_BOX,
                     static::FIELD_CONFIG_BOX_SELECT
-                ]
-            ]
-        ];
+                )
+            )
+        );
         $mergedOptions = array_merge(
-            // phpcs:ignore
-            $result[CustomOptions::GROUP_CUSTOM_OPTIONS_NAME]['children'][CustomOptions::GRID_OPTIONS_NAME]['children']['record']['children'][CustomOptions::CONTAINER_OPTION]['children'][CustomOptions::CONTAINER_COMMON_NAME]['children'][CustomOptions::FIELD_TYPE_NAME]['arguments']['data']['config']['groupsConfig'],
+            $result[CustomOptions::GROUP_CUSTOM_OPTIONS_NAME]['children']
+            [CustomOptions::GRID_OPTIONS_NAME]['children']['record']['children']
+            [CustomOptions::CONTAINER_OPTION]['children'][CustomOptions::CONTAINER_COMMON_NAME]['children']
+            [CustomOptions::FIELD_TYPE_NAME]['arguments']['data']['config']['groupsConfig'],
             $configBoxOption
         );
 
-        // phpcs:ignore
-        $result[CustomOptions::GROUP_CUSTOM_OPTIONS_NAME]['children'][CustomOptions::GRID_OPTIONS_NAME]['children']['record']['children'][CustomOptions::CONTAINER_OPTION]['children'][CustomOptions::CONTAINER_COMMON_NAME]['children'][CustomOptions::FIELD_TYPE_NAME]['arguments']['data']['config']['groupsConfig'] = $mergedOptions;
+        $result[CustomOptions::GROUP_CUSTOM_OPTIONS_NAME]['children']
+        [CustomOptions::GRID_OPTIONS_NAME]['children']['record']['children']
+        [CustomOptions::CONTAINER_OPTION]['children'][CustomOptions::CONTAINER_COMMON_NAME]['children']
+        [CustomOptions::FIELD_TYPE_NAME]['arguments']['data']['config']['groupsConfig'] = $mergedOptions;
 
-        // phpcs:ignore
-        $result[CustomOptions::GROUP_CUSTOM_OPTIONS_NAME]['children'][CustomOptions::GRID_OPTIONS_NAME]['children']['record']['children'][CustomOptions::CONTAINER_OPTION]['children'][static::GRID_TYPE_CONFIG_BOX] = $this->_getConfigBoxConfig(60);
+        $result[CustomOptions::GROUP_CUSTOM_OPTIONS_NAME]['children']
+        [CustomOptions::GRID_OPTIONS_NAME]['children']['record']['children']
+        [CustomOptions::CONTAINER_OPTION]['children'][static::GRID_TYPE_CONFIG_BOX] = $this->_getConfigBoxConfig(60);
 
         return $result;
     }
@@ -117,12 +123,12 @@ class CustomOptionsPlugin
      *
      * @return array
      */
-    private function _getConfigBoxConfig($sortOrder)
+    protected function _getConfigBoxConfig($sortOrder)
     {
-        return [
-            'arguments' => [
-                'data' => [
-                    'config' => [
+        return array(
+            'arguments' => array(
+                'data' => array(
+                    'config' => array(
                         'componentType' => Container::NAME,
                         'formElement' => Container::NAME,
                         'component' => 'Magento_Ui/js/form/components/group',
@@ -133,14 +139,14 @@ class CustomOptionsPlugin
                         'sortOrder' => $sortOrder,
                         'fieldTemplate' => 'Magento_Catalog/form/field',
                         'visible' => false,
-                    ],
-                ],
-            ],
-            'children' => [
+                    ),
+                ),
+            ),
+            'children' => array(
                 // phpcs:ignore
                 static::FIELD_CONFIG_BOX_SELECT => $this->_getConfigBoxElementConfig(10),
-            ]
-        ];
+            )
+        );
     }
 
     /**
@@ -150,26 +156,26 @@ class CustomOptionsPlugin
      *
      * @return array
      */
-    private function _getConfigBoxElementConfig($sortOrder)
+    protected function _getConfigBoxElementConfig($sortOrder)
     {
-        return [
-            'arguments' => [
-                'data' => [
-                    'config' => [
+        return array(
+            'arguments' => array(
+                'data' => array(
+                    'config' => array(
                         'label' => __('Select Configbox Product to Associate'),
                         'formElement' => Select::NAME,
                         'componentType' => Field::NAME,
                         'dataScope' => static::FIELD_CONFIG_BOX_SELECT,
                         'sortOrder' => $sortOrder,
                         'visible' => false,
-                        'options' => $this->configBoxOptions->toOptionArray(),
-                        'validation' => [
+                        'options' => $this->_configBoxOptions->toOptionArray(),
+                        'validation' => array(
                             'required-entry' => true
-                        ]
-                    ],
-                ],
-            ],
-        ];
+                        )
+                    ),
+                ),
+            ),
+        );
     }
 
     /**
@@ -180,8 +186,8 @@ class CustomOptionsPlugin
      * @return int|null
      * @throws Exception
      */
-    private function _getCbProductId($magentoProductId)
+    protected function _getCbProductId($magentoProductId)
     {
-        return $this->prepareModel->getCbProductId($magentoProductId);
+        return $this->_prepareModel->getCbProductId($magentoProductId);
     }
 }

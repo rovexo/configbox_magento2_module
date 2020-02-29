@@ -20,7 +20,6 @@ class ProductMapper extends AbstractDb
      *
      * @return void
      */
-    // phpcs:ignore
     public function _construct()
     {
         $this->_init('configbox_magento_xref_mprod_cbprod', 'id');

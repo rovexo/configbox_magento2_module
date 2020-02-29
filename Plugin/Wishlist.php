@@ -24,11 +24,11 @@ use Rovexo\Configbox\Model\Prepare;
  */
 class Wishlist
 {
-    protected $storeManager;
+    protected $_storeManager;
 
-    protected $productFactory;
+    protected $_productFactory;
 
-    protected $prepare;
+    protected $_prepare;
 
     /**
      * Wishlist constructor.
@@ -42,9 +42,9 @@ class Wishlist
         ProductFactory $productFactory,
         Prepare $prepare
     ) {
-        $this->storeManager = $storeManager;
-        $this->productFactory = $productFactory;
-        $this->prepare = $prepare;
+        $this->_storeManager = $storeManager;
+        $this->_productFactory = $productFactory;
+        $this->_prepare = $prepare;
     }
 
     /**
@@ -73,12 +73,11 @@ class Wishlist
             if ($request->getStoreId()) {
                 $storeId = $request->getStoreId();
             } else {
-                $storeId = $this->storeManager->getStore()->getId();
+                $storeId = $this->_storeManager->getStore()->getId();
             }
         }
 
-        //TODO: Replace deprecated code
-        $product = $this->productFactory->create()
+        $product = $this->_productFactory->create()
             ->setStoreId($storeId)
             ->load($productId);
 
@@ -102,7 +101,7 @@ class Wishlist
                         $cartId = $cartModel->createCart();
                     }
 
-                    $cbProductId = $this->prepare->getCbProductId($productId);
+                    $cbProductId = $this->_prepare->getCbProductId($productId);
                     $positionId = $model->createPosition($cartId, $cbProductId);
                 }
 
@@ -116,7 +115,7 @@ class Wishlist
                 $positionDetails = $positionModel->getPositionDetails();
 
                 // Prepare the SKU
-                $skus = [];
+                $skus = array();
                 $configurationSelections = $configuration->getSelections();
                 foreach ($configurationSelections as $questionId => $selection) {
                     if (ConfigboxQuestion::questionExists($questionId) == false) {
@@ -133,16 +132,17 @@ class Wishlist
                 }
 
                 // Prepare the formatted option value
-                $texts = [];
+                $texts = array();
                 $configurationSelections = $configuration->getSelections();
                 foreach ($configurationSelections as $questionId => $selection) {
                     $question = ConfigboxQuestion::getQuestion($questionId);
                     $texts[] = $question->title . ': ' .
                         $question->getOutputValue($selection);
                 }
+
                 $formattedOptionValue = implode(', ', $texts);
 
-                $configInfo = [
+                $configInfo = array(
                     'position_id' => $positionId,
                     'mage_prod_id' => $product->getId(),
                     'prod_id' => $configuration->getProductId(),
@@ -151,7 +151,7 @@ class Wishlist
                     'totalGross' => $positionDetails->totalUnreducedGross,
                     'skus' => $skus,
                     'formattedOptionValue' => $formattedOptionValue,
-                ];
+                );
 
                 $requestData['options'][$option->getId()] = json_encode($configInfo);
 
@@ -161,6 +161,6 @@ class Wishlist
             }
         }
 
-        return [$product, $request, $forciblySetQty];
+        return array($product, $request, $forciblySetQty);
     }
 }

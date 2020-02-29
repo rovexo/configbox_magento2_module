@@ -20,11 +20,9 @@ use Magento\Framework\View\Element\Template;
  */
 class CbLicenseValidator extends Template
 {
-    protected $authSession;
-
-    protected $backendUrl;
-
-    protected $formKey;
+    protected $_authSession;
+    protected $_backendUrl;
+    protected $_formKey;
 
     /**
      * CbLicenseValidator constructor.
@@ -40,12 +38,12 @@ class CbLicenseValidator extends Template
         Template\Context $context,
         UrlInterface $backendUrl,
         FormKey $formKey,
-        array $data = []
+        array $data = array()
     ) {
         parent::__construct($context, $data);
-        $this->authSession = $authSession;
-        $this->backendUrl = $backendUrl;
-        $this->formKey = $formKey;
+        $this->_authSession = $authSession;
+        $this->_backendUrl = $backendUrl;
+        $this->_formKey = $formKey;
     }
 
     /**
@@ -55,7 +53,7 @@ class CbLicenseValidator extends Template
      */
     public function isAdminLoggedIn()
     {
-        return $this->authSession->isLoggedIn();
+        return $this->_authSession->isLoggedIn();
     }
 
     /**
@@ -66,13 +64,12 @@ class CbLicenseValidator extends Template
      */
     public function isCbLicenseExpired()
     {
-        try{
+        try {
             $cbAdminDashboard = KenedoModel::getModel('ConfigboxModelAdmindashboard');
             return $cbAdminDashboard->isLicenseExpired();
-
         }
-        catch(\Exception $e){
-
+        catch(Exception $e) {
+            return false;
         }
     }
 
@@ -83,11 +80,11 @@ class CbLicenseValidator extends Template
      */
     public function getLicenseUrl()
     {
-        $params = [
+        $params = array(
             'option' => 'com_configbox',
             'controller' => 'adminlicense',
-            'form_key' => $this->formKey->getFormKey()
-        ];
-        return $this->backendUrl->getUrl('configbox/admin/index', $params);
+            'form_key' => $this->_formKey->getFormKey()
+        );
+        return $this->_backendUrl->getUrl('configbox/admin/index', $params);
     }
 }

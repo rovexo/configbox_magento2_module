@@ -18,7 +18,7 @@ use Rovexo\Configbox\Model\MapCbProduct;
 class ProductDelete implements ObserverInterface
 {
 
-    protected $mapCbProductModel;
+    protected $_mapCbProductModel;
 
     /**
      * ProductDelete constructor.
@@ -27,7 +27,7 @@ class ProductDelete implements ObserverInterface
      */
     public function __construct(MapCbProduct $mapCbProductModel)
     {
-        $this->mapCbProductModel = $mapCbProductModel;
+        $this->_mapCbProductModel = $mapCbProductModel;
     }
 
     /**
@@ -41,8 +41,9 @@ class ProductDelete implements ObserverInterface
     {
         $eventProduct = $observer->getEvent()->getProduct();
         if ($eventProduct && $eventProduct->getId()) {
-            $this->mapCbProductModel->deleteCbProductMapping($eventProduct->getId());
+            $this->_mapCbProductModel->deleteCbProductMapping($eventProduct->getId());
         }
+
         return $this;
     }
 }

@@ -22,7 +22,7 @@ use Magento\Store\Model\ScopeInterface;
  */
 class CbConfigurator extends DefaultType
 {
-    protected $scopeConfig;
+    protected $_scopeConfig;
 
     /**
      * CbConfigurator constructor.
@@ -34,9 +34,9 @@ class CbConfigurator extends DefaultType
     public function __construct(
         Session $checkoutSession,
         ScopeConfigInterface $scopeConfig,
-        array $data = []
+        array $data = array()
     ) {
-        $this->scopeConfig = $scopeConfig;
+        $this->_scopeConfig = $scopeConfig;
         parent::__construct($checkoutSession, $scopeConfig, $data);
     }
 
@@ -53,7 +53,7 @@ class CbConfigurator extends DefaultType
     {
         $configInfo = json_decode($configInfoJson, true);
 
-        $includingTax = $this->scopeConfig->getValue(
+        $includingTax = $this->_scopeConfig->getValue(
             'tax/calculation/price_includes_tax',
             ScopeInterface::SCOPE_STORE
         );
@@ -109,16 +109,18 @@ class CbConfigurator extends DefaultType
             if (!empty($missing)) {
                 $this->setData('is_valid', false);
 
-                $missingQuestions = [];
+                $missingQuestions = array();
                 foreach ($missing as $missingElement) {
                     $missingQuestions[] = \KText::_($missingElement['title']);
                 }
 
-                $errorMessage = \KText::_('Before finishing the configuration you have to make a choice for these required elements: ');
+                $msg = 'Before finishing the configuration you have to make a choice for these required elements:';
+                $errorMessage = \KText::_($msg);
                 $errorMessage .= implode(', ', $missingQuestions);
                 throw new LocalizedException(new \Magento\Framework\Phrase($errorMessage));
             }
         }
+
         $this->setData('is_valid', true);
         return $this;
     }

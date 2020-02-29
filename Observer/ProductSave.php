@@ -20,9 +20,9 @@ use Rovexo\Configbox\Plugin\Ui\DataProvider\Product\Form\Modifier\
  */
 class ProductSave implements ObserverInterface
 {
-    protected $mapCbProductModel;
+    protected $_mapCbProductModel;
 
-    protected $prepareModel;
+    protected $_prepareModel;
 
     /**
      * ProductSave constructor.
@@ -34,8 +34,8 @@ class ProductSave implements ObserverInterface
         MapCbProduct $mapCbProductModel,
         Prepare $prepareModel
     ) {
-        $this->mapCbProductModel = $mapCbProductModel;
-        $this->prepareModel = $prepareModel;
+        $this->_mapCbProductModel = $mapCbProductModel;
+        $this->_prepareModel = $prepareModel;
     }
 
     /**
@@ -57,23 +57,25 @@ class ProductSave implements ObserverInterface
                     $isCbOptionExist = true;
                     $cbId = $options['config_box_id'];
                     if ($cbId) {
-                        $this->mapCbProductModel->mapCbProductId(
+                        $this->_mapCbProductModel->mapCbProductId(
                             $cbId,
                             $product->getId()
                         );
                     }
                 }
             }
+
             if (!$isCbOptionExist) {
-                $cbId = $this->prepareModel->getCbProductId($product->getId());
+                $cbId = $this->_prepareModel->getCbProductId($product->getId());
                 if ($cbId) {
-                    $this->mapCbProductModel->deleteCbProductMapping(
+                    $this->_mapCbProductModel->deleteCbProductMapping(
                         $product->getId(),
                         $cbId
                     );
                 }
             }
         }
+
         return $this;
     }
 }

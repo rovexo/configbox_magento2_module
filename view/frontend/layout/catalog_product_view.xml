@@ -7,7 +7,7 @@
         </referenceBlock>
 
         <referenceBlock name="product.info.media">
-            <block class="Rovexo\Configbox\Block\Product\View\Renderer\Visualization" name="configbox.visualization" as="visualization" template="Rovexo_Configbox::product/view/renderer/visualization.phtml" />
+            <block before="-" class="Rovexo\Configbox\Block\Product\View\Renderer\Visualization" name="configbox.visualization" as="visualization" template="Rovexo_Configbox::product/view/renderer/visualization.phtml" />
         </referenceBlock>
 
         <referenceBlock name="before.body.end">

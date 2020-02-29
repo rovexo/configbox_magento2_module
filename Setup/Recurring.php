@@ -21,9 +21,9 @@ use Rovexo_Configbox_KenedoLoader as KenedoLoader;
  */
 class Recurring implements InstallSchemaInterface
 {
-    protected $directoryList;
+    protected $_directoryList;
 
-    protected $file;
+    protected $_file;
 
     /**
      * Recurring constructor.
@@ -35,8 +35,8 @@ class Recurring implements InstallSchemaInterface
         DirectoryList $directoryList,
         File $file
     ) {
-        $this->directoryList = $directoryList;
-        $this->file = $file;
+        $this->_directoryList = $directoryList;
+        $this->_file = $file;
     }
 
     /**
@@ -51,80 +51,79 @@ class Recurring implements InstallSchemaInterface
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
     ) {
-    	$this->_copyLibAssets();
-    	$this->_applyCbUpgrades($setup);
+        $this->_copyLibAssets();
+        $this->_applyCbUpgrades($setup);
 
-	}
+    }
 
-	/**
-	 * Copies the CB lib's assets dir to M2's accessible lib/web dir
-	 * @throws FileSystemException
-	 */
-	private function _copyLibAssets() {
+    /**
+     * Copies the CB lib's assets dir to M2's accessible lib/web dir
+     * @throws FileSystemException
+     */
+    protected function _copyLibAssets()
+    {
 
-		$sourceDir = $this->directoryList->getRoot() . DIRECTORY_SEPARATOR .
-			"vendor" . DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR .
-			"configbox-php" . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR .
-			"Rovexo" . DIRECTORY_SEPARATOR . "Configbox" . DIRECTORY_SEPARATOR .
-			"assets";
+        $sourceDir = $this->_directoryList->getRoot() . DIRECTORY_SEPARATOR .
+            "vendor" . DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR .
+            "configbox-php" . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR .
+            "Rovexo" . DIRECTORY_SEPARATOR . "Configbox" . DIRECTORY_SEPARATOR .
+            "assets";
 
-		$targetDir = $this->directoryList->getPath(DirectoryList::LIB_WEB) .
-			DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR . "configbox" .
-			DIRECTORY_SEPARATOR . "assets";
+        $targetDir = $this->_directoryList->getPath(DirectoryList::LIB_WEB) .
+            DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR . "configbox" .
+            DIRECTORY_SEPARATOR . "assets";
 
-		// On development we use a symlink - if we got one, we ignore the rest
-		if (is_link($targetDir)) {
-			return;
-		}
+        // On development we use a symlink - if we got one, we ignore the rest
+        if (is_link($targetDir)) {
+            return;
+        }
 
-		// Try removing the existing dir and copying it fresh
-		try {
+        // Try removing the existing dir and copying it fresh
+        try {
+            if ($this->_file->isExists($targetDir)) {
+                $this->_file->deleteDirectory($targetDir);
+            }
 
-			if ($this->file->isExists($targetDir)) {
-				$this->file->deleteDirectory($targetDir);
-			}
+            $this->_file->createDirectory($targetDir);
+            $this->_copyDirectory($sourceDir, $targetDir);
+        }
+        catch (FileSystemException $e) {
+            $msg = "\nThe directory 'lib/web/rovexo' could not be recreated.";
+            $msg .= " Please make sure this dir is writable and run setup:upgrade again.";
+            $phrase = new \Magento\Framework\Phrase($msg);
+            throw new FileSystemException($phrase);
+        }
 
-			$this->file->createDirectory($targetDir);
-			$this->_copyDirectory($sourceDir, $targetDir);
+    }
 
-		}
-		catch (FileSystemException $e) {
+    /**
+     * Trigger's CB's upgrade process (using M2's setup connection)
+     * @param SchemaSetupInterface $setup SchemaSetup object
+     */
+    protected function _applyCbUpgrades($setup)
+    {
 
-			throw new FileSystemException(
-				new \Magento\Framework\Phrase("\nThe directory 'lib/web/rovexo' could not be recreated. Please make sure this dir is writable and run setup:upgrade again.")
-			);
+        // Set an area code (there's none when this runs via magento module:upgrade)
+        // and the lacking area code makes URL generation fail.
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $state =  $objectManager->get('Magento\Framework\App\State');
 
-		}
+        try {
+            $state->getAreaCode();
+        }
+        catch (\Exception $e) {
+            $state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
+        }
 
-	}
+        $connection = $setup->getConnection();
 
-	/**
-	 * Trigger's CB's upgrade process (using M2's setup connection)
-	 * @param SchemaSetupInterface $setup SchemaSetup object
-	 */
-	private function _applyCbUpgrades($setup) {
+        // Init Kenedo (which leads to CB's upgrade helper running and setting up the tables)
+        $kenedo = new KenedoLoader();
+        $kenedo->initKenedo();
+        $kenedo->changeDbConnection($connection);
+        $kenedo->applyUpdates();
 
-		// Set an area code (there's none when this runs via magento module:upgrade)
-		// and the lacking area code makes URL generation fail.
-		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-		$state =  $objectManager->get('Magento\Framework\App\State');
-
-		try {
-			$state->getAreaCode();
-		}
-		catch (\Exception $e) {
-			$state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
-		}
-
-		$connection = $setup->getConnection();
-
-		// Init Kenedo (which leads to CB's upgrade helper running and setting up the tables)
-		$kenedo = new KenedoLoader();
-		$kenedo->initKenedo();
-		$kenedo->changeDbConnection($connection);
-		$kenedo->applyUpdates();
-
-	}
+    }
 
     /**
      * Copy directory
@@ -134,14 +133,15 @@ class Recurring implements InstallSchemaInterface
      *
      * @return void
      */
-    private function _copyDirectory($src, $dst)
+    protected function _copyDirectory($src, $dst)
     {
+
         // open the source directory
         $dir = opendir($src);
 
         // Make the destination directory if not exist
         if (!file_exists($dst)) {
-            $this->file->createDirectory($dst);
+            $this->_file->createDirectory($dst);
         }
 
         // Loop through the files in source directory

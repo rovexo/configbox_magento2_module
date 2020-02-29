@@ -21,15 +21,11 @@ use Rovexo\Configbox\Model\Prepare;
  */
 class ConfigBox implements OptionSourceInterface
 {
-    protected $prepareModel;
-
-    protected $request;
-
-    protected $resolver;
-
-    protected $messageManager;
-
-    protected $logger;
+    protected $_prepareModel;
+    protected $_request;
+    protected $_resolver;
+    protected $_messageManager;
+    protected $_logger;
 
     /**
      * ConfigBox constructor.
@@ -47,11 +43,11 @@ class ConfigBox implements OptionSourceInterface
         ManagerInterface $messageManager,
         LoggerInterface $logger
     ) {
-        $this->prepareModel = $prepareModel;
-        $this->request = $request;
-        $this->resolver = $resolver;
-        $this->messageManager = $messageManager;
-        $this->logger = $logger;
+        $this->_prepareModel = $prepareModel;
+        $this->_request = $request;
+        $this->_resolver = $resolver;
+        $this->_messageManager = $messageManager;
+        $this->_logger = $logger;
     }
 
     /**
@@ -61,11 +57,14 @@ class ConfigBox implements OptionSourceInterface
      */
     public function toOptionArray()
     {
-        $cbProductsOptions = [];
-        $cbProductsOptions[] = ['label' => __('--Please Select--'),'value' => ''];
+        $cbProductsOptions = array();
+        $cbProductsOptions[] = array(
+            'label' => __('--Please Select--'),
+            'value' => '',
+        );
 
         try {
-            $allCbProducts = $this->prepareModel->getCbProducts();
+            $allCbProducts = $this->_prepareModel->getCbProducts();
             foreach ($allCbProducts as $cbProduct) {
                 if ($cbProduct->id) {
                     $options['label'] = $this->getTitle($cbProduct);
@@ -74,11 +73,12 @@ class ConfigBox implements OptionSourceInterface
                 }
             }
         } catch (Exception $e) {
-            $this->logger->critical($e);
-            $this->messageManager->addErrorMessage(
+            $this->_logger->critical($e);
+            $this->_messageManager->addErrorMessage(
                 __('An error occurred while loading configbox products.')
             );
         }
+
         return $cbProductsOptions;
     }
 
@@ -91,12 +91,13 @@ class ConfigBox implements OptionSourceInterface
      */
     protected function getTitle($cbProduct)
     {
-        $locale = $this->resolver->getLocale();
+        $locale = $this->_resolver->getLocale();
         $titleCode = 'title-' . $locale;
         $title = $cbProduct->title;
         if (isset($cbProduct->{$titleCode})) {
             $title = $cbProduct->{$titleCode};
         }
+
         return $title;
     }
 }

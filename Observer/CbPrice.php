@@ -22,23 +22,23 @@ class CbPrice implements ObserverInterface
     /**
      * @var Registry
      */
-    protected $registry;
+    protected $_registry;
 
     /**
      * @var Prepare
      */
-    protected $prepare;
+    protected $_prepare;
 
     /**
      * @param Registry $registry
      * @param Prepare $prepare
      */
     public function __construct(
-        Registry $registry, //  @TODO: Replace deprecated code
+        Registry $registry,
         Prepare $prepare
     ) {
-        $this->registry = $registry;
-        $this->prepare = $prepare;
+        $this->_registry = $registry;
+        $this->_prepare = $prepare;
     }
 
     /**
@@ -53,7 +53,7 @@ class CbPrice implements ObserverInterface
         $priceConfigObj = $observer->getData('configObj')->getConfig();
 
         /** @var \Magento\Catalog\Model\Product $product */
-        $product = $this->registry->registry('current_product');
+        $product = $this->_registry->registry('current_product');
 
         $cbOption = '';
         foreach ($product->getOptions() as $option) {
@@ -71,44 +71,57 @@ class CbPrice implements ObserverInterface
         $cbOptionData = json_decode($preConfiguredValues[$cbOption->getOptionId()], true);
 
         if ($product->hasConfigureMode() && ($product->getConfigureMode() === true)) {
-            $cbPriceData = [
-                'prices' => [
-                    'oldPrice' => [
+            $cbPriceData = array(
+                'prices' => array(
+                    'oldPrice' => array(
                         'amount' => $cbOptionData['totalGross'],
-                        'adjustments' => [],
-                    ],
-                    'basePrice' => [
+                        'adjustments' => array(),
+                    ),
+                    'basePrice' => array(
                         'amount' => $cbOptionData['totalNet'],
-                    ],
-                    'finalPrice' => [
+                    ),
+                    'finalPrice' => array(
                         'amount' => $cbOptionData['totalGross'],
-                    ]
-                ],
+                    )
+                ),
                 'type' => $cbOption->getPriceType(),
                 'name' => $cbOption->getTitle(),
-            ];
+            );
         } else {
-            $this->prepare->prepareConfigurator();
+            $mageProductId = $product->getId();
+            $cbProdId = $this->_prepare->getCbProductId($mageProductId);
 
-            $cartPositionModel = KenedoModel::getModel('ConfigboxModelCartPosition');
-            $positionDetails = $cartPositionModel->getPositionDetails();
+            $pageModel = KenedoModel::getModel('ConfigboxModelConfiguratorpage');
+            $cartModel = KenedoModel::getModel('ConfigboxModelCart');
+            $positionModel = KenedoModel::getModel('ConfigboxModelCartPosition');
 
-            $cbPriceData = [
-                'prices' => [
-                    'oldPrice' => [
+            $taxRate = $this->_prepare->getTaxRate($product);
+            \KSession::set('cbtaxrate', $taxRate);
+
+            $pageModel->ensureProperCartEnvironment($cbProdId);
+
+            $cartId = $cartModel->getSessionCartId();
+            $positionId = $positionModel->createPosition($cartId, $cbProdId);
+
+            $position = $positionModel->getPosition($positionId);
+            $positionDetails = $positionModel->getPositionDetails($position);
+
+            $cbPriceData = array(
+                'prices' => array(
+                    'oldPrice' => array(
                         'amount' => $positionDetails->totalUnreducedGross,
-                        'adjustments' => [],
-                    ],
-                    'basePrice' => [
+                        'adjustments' => array(),
+                    ),
+                    'basePrice' => array(
                         'amount' => $positionDetails->totalUnreducedNet,
-                    ],
-                    'finalPrice' => [
+                    ),
+                    'finalPrice' => array(
                         'amount' => $positionDetails->totalUnreducedGross,
-                    ]
-                ],
+                    )
+                ),
                 'type' => $cbOption->getPriceType(),
                 'name' => $cbOption->getTitle(),
-            ];
+            );
         }
 
         $priceConfigObj[$cbOption->getOptionId()] = $cbPriceData;

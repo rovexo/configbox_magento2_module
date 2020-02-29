@@ -23,15 +23,10 @@ use Rovexo\Configbox\Model\Prepare;
  */
 class ConfigBox extends AbstractType
 {
-    // phpcs:ignore
-    protected $_template
-        = 'Rovexo_Configbox::catalog/product/edit/options/type/configbox.phtml';
-
-    protected $configBoxOptions;
-
-    protected $prepareModel;
-
-    protected $request;
+    protected $_template = 'Rovexo_Configbox::catalog/product/edit/options/type/configbox.phtml';
+    protected $_configBoxOptions;
+    protected $_prepareModel;
+    protected $_request;
 
     /**
      * ConfigBox constructor.
@@ -47,11 +42,11 @@ class ConfigBox extends AbstractType
         Price $optionPrice,
         ConfigBoxOptions $configBoxOptions,
         Prepare $prepareModel,
-        array $data = []
+        array $data = array()
     ) {
-        $this->configBoxOptions = $configBoxOptions;
-        $this->prepareModel = $prepareModel;
-        $this->request = $context->getRequest();
+        $this->_configBoxOptions = $configBoxOptions;
+        $this->_prepareModel = $prepareModel;
+        $this->_request = $context->getRequest();
         parent::__construct($context, $optionPrice, $data);
     }
 
@@ -71,11 +66,11 @@ class ConfigBox extends AbstractType
                 $this->getNameInLayout() . '.option_config_box_type',
                 $this->getNameInLayout()
             )->setData(
-                [
+                array(
                     'id' => 'product_option_<%- data.option_id %>_config_box',
                     'class' => 'config-box-select required-option-select',
                     'name' =>'product[options][<%- data.option_id %>][config_box_id]'
-                ]
+                )
             )
         );
 
@@ -92,15 +87,16 @@ class ConfigBox extends AbstractType
     {
         $childHtml = $this->getChildBlock('option_config_box_type');
         /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $productId =  $this->request->getParams('id');
+        $productId =  $this->_request->getParams('id');
         $cbProductId = '';
         if ($productId) {
-            $cbProductId = $this->prepareModel->getCbProductId($cbProductId);
+            $cbProductId = $this->_prepareModel->getCbProductId($cbProductId);
             if ($cbProductId) {
                 $childHtml->setValue($cbProductId);
             }
         }
-        $childHtml->setOptions($this->configBoxOptions->toOptionArray());
+
+        $childHtml->setOptions($this->_configBoxOptions->toOptionArray());
         return $this->getChildHtml('option_config_box_type');
     }
 }

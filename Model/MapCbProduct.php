@@ -18,13 +18,10 @@ use Rovexo\Configbox\Model\ResourceModel\ProductMapper\CollectionFactory;
 class MapCbProduct
 {
 
-    protected $productMapperFactory;
-
-    protected $collectionFactory;
-
-    protected $messageManager;
-
-    protected $logger;
+    protected $_productMapperFactory;
+    protected $_collectionFactory;
+    protected $_messageManager;
+    protected $_logger;
 
     /**
      * MapCbProduct constructor.
@@ -40,10 +37,10 @@ class MapCbProduct
         ManagerInterface $messageManager,
         LoggerInterface $logger
     ) {
-        $this->productMapperFactory = $productMapper;
-        $this->collectionFactory = $collectionFactory;
-        $this->messageManager = $messageManager;
-        $this->logger = $logger;
+        $this->_productMapperFactory = $productMapper;
+        $this->_collectionFactory = $collectionFactory;
+        $this->_messageManager = $messageManager;
+        $this->_logger = $logger;
     }
 
     /**
@@ -57,7 +54,7 @@ class MapCbProduct
     public function mapCbProductId($cbProductId, $magentoProductId)
     {
         try {
-            $previousData = $this->collectionFactory->create()
+            $previousData = $this->_collectionFactory->create()
                 ->addFieldToFilter('magento_product_id', $magentoProductId)
                 ->getFirstItem();
 
@@ -67,17 +64,18 @@ class MapCbProduct
                     $previousData->save();
                 }
             } else {
-                $this->productMapperFactory->create()
+                $this->_productMapperFactory->create()
                     ->setCbProductId($cbProductId)
                     ->setMagentoProductId($magentoProductId)
                     ->save();
             }
         } catch (Exception $e) {
-            $this->logger->critical($e);
-            $this->messageManager->addErrorMessage(
+            $this->_logger->critical($e);
+            $this->_messageManager->addErrorMessage(
                 __('An error occurred while saving configbox product.')
             );
         }
+
         return true;
     }
 
@@ -92,24 +90,27 @@ class MapCbProduct
     public function deleteCbProductMapping($magentoProductId, $cbProductId = null)
     {
         try {
-            $mappedRow = $this->collectionFactory->create()
+            $mappedRow = $this->_collectionFactory->create()
                 ->addFieldToFilter('magento_product_id', $magentoProductId);
 
             if ($cbProductId) {
                 $mappedRow->addFieldToFilter('cb_product_id', $cbProductId);
             }
+
             $mappedRow = $mappedRow->getFirstItem();
 
             if ($mappedRow->getId()) {
                 $mappedRow->delete();
             }
+
             return true;
         } catch (Exception $e) {
-            $this->logger->critical($e);
-            $this->messageManager->addErrorMessage(
+            $this->_logger->critical($e);
+            $this->_messageManager->addErrorMessage(
                 __('An error occurred while deleting configbox product.')
             );
         }
+
         return true;
     }
 }

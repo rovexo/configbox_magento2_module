@@ -19,7 +19,7 @@ use Rovexo\Configbox\Plugin\Ui\DataProvider\Product\Form\Modifier\
 class ProductCustomOptionsDataProviderPlugin
 {
 
-    protected $prepareModel;
+    protected $_prepareModel;
 
     /**
      * ProductCustomOptionsDataProviderPlugin constructor.
@@ -28,7 +28,7 @@ class ProductCustomOptionsDataProviderPlugin
      */
     public function __construct(Prepare $prepareModel)
     {
-        $this->prepareModel = $prepareModel;
+        $this->_prepareModel = $prepareModel;
     }
 
 
@@ -42,25 +42,29 @@ class ProductCustomOptionsDataProviderPlugin
      */
     public function afterGetData(ProductCustomOptionsDataProvider $subject, $result)
     {
-        if (isset($result['items'])) {
-            $totalItems = $result['items'];
-            $i = 0;
-            foreach ($totalItems as $item) {
-                if (isset($item['options'])) {
-                    foreach ($item['options'] as $index => $option) {
-                        if ($option['type'] ==CustomOptionsPlugin::TYPE_CONFIG_BOX) {
-                            $cbProductId = $this->prepareModel
-                                ->getCbProductId($item['entity_id']);
-                            if ($cbProductId) {
-                                // phpcs:ignore
-                                $result['items'][$i]['options'][$index][CustomOptionsPlugin::FIELD_CONFIG_BOX_SELECT] = $cbProductId;
-                            }
+        if (!isset($result['items'])) {
+            return $result;
+        }
+
+        $totalItems = $result['items'];
+        $i = 0;
+        foreach ($totalItems as $item) {
+            if (isset($item['options'])) {
+                foreach ($item['options'] as $index => $option) {
+                    if ($option['type'] ==CustomOptionsPlugin::TYPE_CONFIG_BOX) {
+                        $cbProductId = $this->_prepareModel
+                            ->getCbProductId($item['entity_id']);
+                        if ($cbProductId) {
+                            $result['items'][$i]['options'][$index]
+                            [CustomOptionsPlugin::FIELD_CONFIG_BOX_SELECT] = $cbProductId;
                         }
                     }
                 }
-                $i++;
             }
+
+            $i++;
         }
+
         return $result;
     }
 }

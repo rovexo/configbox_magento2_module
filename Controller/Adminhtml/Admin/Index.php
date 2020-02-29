@@ -6,7 +6,6 @@ namespace Rovexo\Configbox\Controller\Adminhtml\Admin;
 use Exception;
 use KRequest;
 use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use KenedoController;
@@ -24,17 +23,6 @@ use KenedoPlatform;
  */
 class Index extends Action
 {
-
-    /**
-     * Index constructor.
-     *
-     * @param Context $context Context object
-     */
-    public function __construct(
-        Context $context
-    ) {
-        parent::__construct($context);
-    }
 
     /**
      * The main execute() method
@@ -109,7 +97,7 @@ class Index extends Action
                 $controller->redirect();
             } else {
                 // Send output through observers
-                KenedoObserver::triggerEvent('onBeforeRender', [&$output]);
+                KenedoObserver::triggerEvent('onBeforeRender', array(&$output));
 
                 // Render the output
                 ob_start();

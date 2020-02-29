@@ -22,7 +22,7 @@ use Rovexo\Configbox\Plugin\Catalog\Product\Option;
  */
 class Quote
 {
-    protected $prepare;
+    protected $_prepare;
 
     /**
      * Quote constructor.
@@ -32,7 +32,7 @@ class Quote
     public function __construct(
         Prepare $prepare
     ) {
-        $this->prepare = $prepare;
+        $this->_prepare = $prepare;
     }
 
     /**
@@ -74,7 +74,7 @@ class Quote
                         $cartId = $cartModel->createCart();
                     }
 
-                    $cbProductId = $this->prepare->getCbProductId($productId);
+                    $cbProductId = $this->_prepare->getCbProductId($productId);
                     $positionId = $model->createPosition($cartId, $cbProductId);
                 }
 
@@ -88,7 +88,7 @@ class Quote
                 $positionDetails = $positionModel->getPositionDetails();
 
                 // Prepare the SKU
-                $skus = [];
+                $skus = array();
                 $configurationSelections = $configuration->getSelections();
                 foreach ($configurationSelections as $questionId => $selection) {
                     if (ConfigboxQuestion::questionExists($questionId) == false) {
@@ -105,16 +105,16 @@ class Quote
                 }
 
                 // Prepare the formatted option value
-                $texts = [];
+                $texts = array();
                 $configurationSelections = $configuration->getSelections();
                 foreach ($configurationSelections as $questionId => $selection) {
                     $question = ConfigboxQuestion::getQuestion($questionId);
-                    $texts[] = $question->title . ': ' .
-                        $question->getOutputValue($selection);
+                    $texts[] = $question->title . ': ' .$question->getOutputValue($selection);
                 }
+
                 $formattedOptionValue = implode(', ', $texts);
 
-                $configInfo = [
+                $configInfo = array(
                     'position_id' => $positionId,
                     'mage_prod_id' => $product->getId(),
                     'prod_id' => $configuration->getProductId(),
@@ -123,13 +123,13 @@ class Quote
                     'totalGross' => $positionDetails->totalUnreducedGross,
                     'skus' => $skus,
                     'formattedOptionValue' => $formattedOptionValue,
-                ];
+                );
 
                 $requestData['options'][$option->getId()] = json_encode($configInfo);
 
                 $request->setData($requestData);
 
-                $model->editPosition($positionId, ['finished'=>1]);
+                $model->editPosition($positionId, array('finished'=>1));
             }
         }
     }

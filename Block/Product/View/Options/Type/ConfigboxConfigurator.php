@@ -3,8 +3,6 @@
 namespace Rovexo\Configbox\Block\Product\View\Options\Type;
 
 use Rovexo\Configbox\Model\Prepare;
-use KRequest;
-use ConfigboxConfiguration;
 
 /**
  * Class ConfigBoxConfigurator
@@ -17,7 +15,7 @@ use ConfigboxConfiguration;
  */
 class ConfigboxConfigurator extends \Magento\Catalog\Block\Product\View\Options\AbstractOptions
 {
-    protected $prepare;
+    protected $_prepare;
 
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
@@ -31,35 +29,46 @@ class ConfigboxConfigurator extends \Magento\Catalog\Block\Product\View\Options\
         \Magento\Framework\Pricing\Helper\Data $pricingHelper,
         \Magento\Catalog\Helper\Data $catalogData,
         Prepare $prepare,
-        array $data = []
+        array $data = array()
     ) {
         parent::__construct($context, $pricingHelper, $catalogData, $data);
-        $this->prepare = $prepare;
+        $this->_prepare = $prepare;
     }
 
     /**
-     * Prepare configurator
-     *
-     * @return void
+     * @return float
      */
-    public function prepare()
+    public function getTaxRate()
     {
-        $this->prepare->prepareConfigurator();
+        $taxRate = $this->_prepare->getTaxRate($this->getProduct());
+        return $taxRate;
     }
 
     /**
-     * @return int|null
+     * @return array
+     * @throws \Exception
      */
-    public function getPageId()
+    public function getConfigInfo()
     {
-        return KRequest::getInt('page_id');
-    }
+        $product = $this->getProduct();
+        $pre = $product->getPreconfiguredValues();
+        $options = $pre->getOptions();
 
-    /**
-     * @return int|null
-     */
-    public function getCartPositionId()
-    {
-        return ConfigboxConfiguration::getInstance()->getPositionId();
+        $option = $this->getOption();
+        $optionId = $option->getId();
+        $mageProdId = $product->getId();
+
+        if ($options) {
+            $configInfo = json_decode($options[$optionId], true);
+        } else {
+            $configInfo = array(
+                'mage_prod_id' => $mageProdId,
+                'prod_id' => $this->_prepare->getCbProductId($mageProdId),
+                'selections' => array(),
+                'position_id' => null,
+            );
+        }
+
+        return $configInfo;
     }
 }

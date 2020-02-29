@@ -21,7 +21,6 @@ class Collection extends AbstractCollection
      *
      * @return void
      */
-    // phpcs:ignore
     public function _construct()
     {
         $this->_init(

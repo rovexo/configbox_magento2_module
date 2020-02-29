@@ -19,7 +19,7 @@ use Rovexo\Configbox\Model\Product\Option\Type\CbConfigurator;
  */
 class Option
 {
-    protected $optionTypeFactory;
+    protected $_optionTypeFactory;
 
     /**
      * Option constructor.
@@ -29,7 +29,7 @@ class Option
     public function __construct(
         Factory $optionTypeFactory
     ) {
-        $this->optionTypeFactory = $optionTypeFactory;
+        $this->_optionTypeFactory = $optionTypeFactory;
     }
 
     /**
@@ -52,6 +52,7 @@ class Option
                 return 'configbox';
             }
         }
+
         return $originalResult;
     }
 
@@ -71,7 +72,7 @@ class Option
         $type
     ) {
         if ($type == 'configbox') {
-            return $this->optionTypeFactory->create(CbConfigurator::class);
+            return $this->_optionTypeFactory->create(CbConfigurator::class);
         }
 
         return $proceed($type);

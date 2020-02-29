@@ -21,9 +21,8 @@ use Rovexo\Configbox\Plugin\Ui\DataProvider\Product\Form\Modifier\
 class CopierPlugin
 {
 
-    protected $mapCbProductModel;
-
-    protected $prepareModel;
+    protected $_mapCbProductModel;
+    protected $_prepareModel;
 
     /**
      * CopierPlugin constructor.
@@ -35,8 +34,8 @@ class CopierPlugin
         MapCbProduct $mapCbProductModel,
         Prepare $prepareModel
     ) {
-        $this->mapCbProductModel = $mapCbProductModel;
-        $this->prepareModel = $prepareModel;
+        $this->_mapCbProductModel = $mapCbProductModel;
+        $this->_prepareModel = $prepareModel;
     }
 
     /**
@@ -55,14 +54,15 @@ class CopierPlugin
             foreach ($customOptions as $optionId => $options) {
                 if ($options->getType() == CustomOptionsPlugin::TYPE_CONFIG_BOX) {
                     $cbProductId
-                        = $this->prepareModel->getCbProductId($product->getId());
+                        = $this->_prepareModel->getCbProductId($product->getId());
                     if ($cbProductId) {
-                        $this->mapCbProductModel
+                        $this->_mapCbProductModel
                             ->mapCbProductId($cbProductId, $result->getId());
                     }
                 }
             }
         }
+
         return $result;
     }
 }

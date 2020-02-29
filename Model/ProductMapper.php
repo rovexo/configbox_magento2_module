@@ -20,7 +20,6 @@ class ProductMapper extends AbstractModel
      *
      * @return void
      */
-    // phpcs:ignore
     public function _construct()
     {
         $this->_init(ResourceModel\ProductMapper::class);

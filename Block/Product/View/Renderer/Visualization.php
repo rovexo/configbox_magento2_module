@@ -17,9 +17,9 @@ use Magento\Framework\Registry;
  */
 class Visualization extends Template
 {
-    protected $prepare;
+    protected $_prepare;
 
-    protected $registry;
+    protected $_registry;
 
     /**
      * Visualization constructor.
@@ -32,29 +32,19 @@ class Visualization extends Template
     public function __construct(
         Template\Context $context,
         Prepare $prepare,
-        Registry $registry, //  @TODO: Replace deprecated code
-        array $data = []
+        Registry $registry,
+        array $data = array()
     ) {
         parent::__construct($context, $data);
-        $this->prepare = $prepare;
-        $this->registry = $registry;
-    }
-
-    /**
-     * Prepare configurator
-     *
-     * @return void
-     */
-    public function prepare()
-    {
-        $this->prepare->prepareConfigurator();
+        $this->_prepare = $prepare;
+        $this->_registry = $registry;
     }
 
     public function hasCbCustomOption()
     {
-        $mageProduct = $this->registry->registry('current_product');
+        $mageProduct = $this->_registry->registry('current_product');
         $mageProductId = $mageProduct->getId();
-        $cbProductId = $this->getCbProductId($mageProductId);
+        $cbProductId = $this->_prepare->getCbProductId($mageProductId);
 
         return $cbProductId ? true : false;
     }

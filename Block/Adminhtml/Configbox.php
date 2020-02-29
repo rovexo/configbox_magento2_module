@@ -59,7 +59,7 @@ class Configbox extends Template
                 $controller->redirect();
             } else {
                 // Send output through observers
-                KenedoObserver::triggerEvent('onBeforeRender', [&$output]);
+                KenedoObserver::triggerEvent('onBeforeRender', array(&$output));
 
                 // Render the output
                 ob_start();
