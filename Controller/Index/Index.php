@@ -42,21 +42,31 @@ class Index extends Action
             KRequest::setVar('controller', 'admindashboard');
         }
 
-        $getRawOutput = (
-            KRequest::getVar('format') == 'raw' ||
-            KRequest::getVar('ajax_sub_view') == '1'
-        );
-        $getAsHtmlDoc = (
-            KRequest::getVar('in_modal') == '1' ||
-            KRequest::getVar('tmpl') == 'component'
-        );
+		$outputMode = KenedoPlatform::p()->getOutputMode();
 
-        if ($getRawOutput || $getAsHtmlDoc) {
-            KenedoPlatform::p()->echoOutput($this->getOutput());
-        } else {
-            $this->_view->loadLayout();
-            $this->_view->renderLayout();
-        }
+		if ($outputMode == 'view_only' || $outputMode == 'in_html_doc') {
+			KenedoPlatform::p()->echoOutput($this->getOutput());
+		} else {
+			$this->_view->loadLayout();
+			$this->_view->renderLayout();
+		}
+		return;
+
+//        $getRawOutput = (
+//            KRequest::getVar('format') == 'raw' ||
+//            KRequest::getVar('ajax_sub_view') == '1'
+//        );
+//        $getAsHtmlDoc = (
+//            KRequest::getVar('in_modal') == '1' ||
+//            KRequest::getVar('tmpl') == 'component'
+//        );
+//
+//        if ($getRawOutput || $getAsHtmlDoc) {
+//            KenedoPlatform::p()->echoOutput($this->getOutput());
+//        } else {
+//            $this->_view->loadLayout();
+//            $this->_view->renderLayout();
+//        }
     }
 
     /**
