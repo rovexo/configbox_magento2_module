@@ -52,21 +52,6 @@ class Index extends Action
 		}
 		return;
 
-//        $getRawOutput = (
-//            KRequest::getVar('format') == 'raw' ||
-//            KRequest::getVar('ajax_sub_view') == '1'
-//        );
-//        $getAsHtmlDoc = (
-//            KRequest::getVar('in_modal') == '1' ||
-//            KRequest::getVar('tmpl') == 'component'
-//        );
-//
-//        if ($getRawOutput || $getAsHtmlDoc) {
-//            KenedoPlatform::p()->echoOutput($this->getOutput());
-//        } else {
-//            $this->_view->loadLayout();
-//            $this->_view->renderLayout();
-//        }
     }
 
     /**

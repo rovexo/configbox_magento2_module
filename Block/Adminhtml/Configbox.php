@@ -31,6 +31,25 @@ class Configbox extends Template
     // phpcs:ignore
     protected function _prepareLayout()
     {
+
+    	$ionCubeOk = true;
+		if (extension_loaded('ionCube Loader') == false) {
+			$ionCubeOk = false;
+		}
+		else {
+			if (function_exists('ioncube_loader_version')) {
+				if (version_compare(ioncube_loader_version(), '10.2') == -1) {
+					$ionCubeOk = false;
+				}
+			}
+		}
+		if ($ionCubeOk == false) {
+			$msg = 'To run ConfigBox you need to install the PHP extension ionCube Loader (version 10.2 or higher). ';
+			$msg .= 'See <a href="https://www.configbox.at/en/technical-requirements" target="_blank">technical requirements</a> with instructions.';
+			$this->output = $msg;
+			return $this;
+		}
+
         // Figure out which task of which controller to execute from the request
         $component = KRequest::getKeyword('option', 'com_configbox');
         $controllerName = KRequest::getKeyword('controller', '');
