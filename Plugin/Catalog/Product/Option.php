@@ -44,7 +44,7 @@ class Option
     public function aroundGetGroupByType(
         CoreOption $subject,
         Closure $proceed,
-        $type
+        $type = ''
     ) {
         $originalResult = $proceed($type);
         if ($originalResult == '') {
