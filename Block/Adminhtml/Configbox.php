@@ -87,6 +87,8 @@ class Configbox extends Template
 
                 // Restore error handler to give the platform a normal environment
                 KenedoPlatform::p()->restoreErrorHandler();
+				KenedoPlatform::p()->restoreExceptionHandler();
+
             }
         }
 

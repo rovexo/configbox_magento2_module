@@ -101,6 +101,8 @@ class Index extends Action
 
                 // Restore error handler to give the platform a normal environment
                 KenedoPlatform::p()->restoreErrorHandler();
+				KenedoPlatform::p()->restoreExceptionHandler();
+
             }
         }
 
