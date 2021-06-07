@@ -67,10 +67,12 @@ class CbPrice implements ObserverInterface
             return $this;
         }
 
-        $preConfiguredValues = $product->getPreconfiguredValues()->getOptions();
-        $cbOptionData = json_decode($preConfiguredValues[$cbOption->getOptionId()], true);
-
         if ($product->hasConfigureMode() && ($product->getConfigureMode() === true)) {
+
+            $preConfiguredValues = $product->getPreconfiguredValues();
+            $preConfiguredOptions = $preConfiguredValues->getOptions();
+            $cbOptionData = json_decode($preConfiguredOptions[$cbOption->getOptionId()], true);
+
             $cbPriceData = array(
                 'prices' => array(
                     'oldPrice' => array(

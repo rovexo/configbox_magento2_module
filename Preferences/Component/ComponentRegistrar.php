@@ -12,21 +12,9 @@ class ComponentRegistrar extends MagentoComponentRegistrar
      */
     public function getPaths($type)
     {
-
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $state =  $objectManager->get('Magento\Framework\App\State');
-        try {
-            $state->getAreaCode();
-        }
-        catch (\Exception $e) {
-            $state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
-        }
-        
-        //Rovexo Customisation Start
+        // For the CB customization module to work during setup:di:compile, we need to load Kenedo
         $kenedoLoader = new Rovexo_Configbox_KenedoLoader();
         $kenedoLoader->initKenedo();
-
-        //Rovexo Customisation End
         return parent::getPaths($type);
     }
 }
