@@ -1,4 +1,12 @@
 <?php
-KenedoPlatform::p()->renderStyleSheetLinks();
-KenedoPlatform::p()->renderHeadScriptDeclarations();
-KenedoPlatform::p()->renderBodyScriptDeclarations();
+$platform = KenedoPlatform::p();
+
+$platform->renderStyleSheetLinks();
+
+foreach ($platform->headScriptDeclarations as $js) {
+    echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
+}
+
+foreach ($platform->bodyScriptDeclarations as $js) {
+    echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
+}
