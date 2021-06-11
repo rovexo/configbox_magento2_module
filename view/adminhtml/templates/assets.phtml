@@ -1,12 +1,27 @@
 <?php
 $platform = KenedoPlatform::p();
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer Available in M2.3 */
+/** @var \Magento\Csp\Api\InlineUtilInterface $csp Available in M2.4 */
 
 $platform->renderStyleSheetLinks();
 
-foreach ($platform->headScriptDeclarations as $js) {
-    echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
-}
+if (isset($secureRenderer)) {
+    foreach ($platform->headScriptDeclarations as $js) {
+        echo $secureRenderer->renderTag('script', ['type' => 'text/javascript'], $js, false);
+    }
 
-foreach ($platform->bodyScriptDeclarations as $js) {
-    echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
+    foreach ($platform->bodyScriptDeclarations as $js) {
+        echo $secureRenderer->renderTag('script', ['type' => 'text/javascript'], $js, false);
+    }
+}
+elseif(isset($csp)) {
+
+    foreach ($platform->headScriptDeclarations as $js) {
+        echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
+    }
+
+    foreach ($platform->bodyScriptDeclarations as $js) {
+        echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
+    }
+
 }
