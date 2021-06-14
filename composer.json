@@ -13,7 +13,7 @@
         "rovexo/configbox-php": "1.2.7"
     },
     "extra": {
-        "internal-commit-hash": "956222cd637dc669aac01b9a2df1b08596fc979e",
+        "internal-commit-hash": "bcf5136858be676835590cc1be1debe4265217df",
         "internal-branch": "master"
     },
     "autoload": {
