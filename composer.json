@@ -1,7 +1,7 @@
 {
     "name": "rovexo/configbox-magento2",
     "description": "N/A",
-    "version": "3.3.7",
+    "version": "3.3.8",
     "type": "magento2-module",
     "license": "proprietary",
     "config": {
@@ -9,21 +9,11 @@
     },
     "require": {
         "php": "7.1 - 7.4",
-        "ext-json": "*",
         "magento/framework": "102 - 103",
-        "magento/module-backend": "*",
-        "magento/module-catalog": "*",
-        "magento/module-email": "*",
-        "magento/module-media-storage": "*",
-        "magento/module-store": "*",
-        "magento/module-theme": "*",
-        "magento/module-ui": "*",
-        "magento/module-variable": "*",
-        "magento/module-widget": "*",
-        "rovexo/configbox-php": "1.2.5"
+        "rovexo/configbox-php": "1.2.6"
     },
     "extra": {
-        "internal-commit-hash": "bcf5136858be676835590cc1be1debe4265217df",
+        "internal-commit-hash": "956222cd637dc669aac01b9a2df1b08596fc979e",
         "internal-branch": "master"
     },
     "autoload": {

@@ -1,0 +1,369 @@
+#calc-editor fieldset {
+	border:1px solid #ccc;
+	padding:5px;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+#calc-editor #compability-rule {
+	padding-top:10px;
+	min-height:50px;
+	margin-bottom:10px;
+	padding-bottom:10px;
+}
+
+#calc-editor {
+	margin:0px;
+}
+
+#calc-editor select {
+	float:none;
+	margin:0px;
+}
+
+#calc-editor #buttons {
+	margin:0px 0px 10px;
+	float:right;
+}
+
+#calc-editor {
+	font-size:13px;
+}
+
+.editor-heading,
+.heading-conditions {
+	font-size:20px;
+}
+
+#calc-editor .drop-area,
+#calc-editor .item {
+	display:inline-block;
+	border:1px solid #4DA6FF;
+	background:#B3D9FF;
+	color:#000;
+	border-radius:15px;
+	margin:2px 2px;
+	padding:5px 7px;
+	cursor:pointer;
+}
+
+#calc-editor .parameter-drop-area {
+	display:inline-block;
+	border: 2px dashed #aaa;
+	border-radius:0px;
+    padding: 4px 5px;
+	background:#fff;
+	min-width:15px;
+	line-height:1em;
+}
+
+#calc-editor .parameter:after {
+	content:',';
+}
+
+#calc-editor .parameter:last-child:after {
+	content:'';
+}
+
+#calc-editor .drop-area {
+	border: 2px dashed #aaa;
+	border-radius:0px;
+	padding-top:4px;
+	padding-bottom:4px;
+	background:#fff;
+	min-width:15px;
+}
+
+#calc-editor .drop-area.initial {
+	padding:5px 7px;
+}
+
+#calc-editor .term input {
+	float:none;
+	margin:0px;
+	padding:0px 2px;
+	width:60px;
+}
+
+#calc-editor #terms.squeeze .term {
+	max-width:120px;
+	text-align:center;
+	overflow:hidden;
+}
+	
+#calc-editor .term.selected {
+	background:#4DA6FF;
+	color:#fff;
+}
+
+#calc-editor .item.function,
+#calc-editor .bracket {
+	border:1px solid #e5e631;
+	background:#FFFFB3;
+	border-radius:10px;
+	padding:5px 10px;
+	cursor:pointer;
+	margin:5px 2px;
+}
+
+#calc-editor .item.function.selected {
+	color:#333;
+	background:#FDFE4C;
+}
+
+#calc-editor .bracket.selected {
+	background:#FDFE4C;
+}
+
+#calc-editor .item.operator {
+	border:1px solid #FFA54C;
+	background:#FFD9B3;
+	color:#000;
+	border-radius:15px;
+	padding:5px 7px;
+	cursor:pointer;
+	margin:2px 2px;
+	text-transform:uppercase;
+}
+
+#calc-editor .item.operator.selected {
+	background:#FFA54C;
+	color:#fff;
+}
+
+#calc-editor .item .input[type=text] {
+	display:inline-block;
+	margin:0 5px;
+	background:none;
+	border:1px solid #4DA6FF;
+	width:20px;
+	height:15px;
+	line-height:15px;
+	outline:none;
+	color:#000;
+	padding-left:0px;
+	padding-right:0px;
+	transition-property:width;
+	transition-duration: 0.3s;
+}
+
+#calc-editor .item.number .input[type=text] {
+	border:none;
+	width:60px;
+	box-shadow:none;
+}
+
+#calc-editor .drop-area.drag-over {
+	border-color:#000;
+}
+
+#calc-editor .new-item-header-row {
+	margin-bottom:10px;
+}
+
+#calc-editor .height-limiter {
+	overflow:auto;
+}
+
+#calc-editor #element-picker .height-limiter {
+	height:375px;
+}
+
+#calc-editor #element-picker label {
+	margin-bottom:2px;
+	display:block;
+}
+
+#calc-editor #element-attributes .height-limiter {
+	height:440px;
+}
+
+#calc-editor .product-filter {
+	display:none;
+}
+
+#calc-editor .product-filter select,
+#calc-editor .page-filters select {
+	width:100%;
+	font-size:1em;
+}
+
+#calc-editor .product-filter,
+#calc-editor .page-filters {
+	margin-bottom:5px;
+}
+
+#calc-editor #custom-term-blueprints,
+#calc-editor #operator-blueprints {
+	display:inline-block;
+}
+
+#calc-editor #element-picker ul,
+#calc-editor #element-attributes ul {
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+
+#calc-editor #item-picker ul {
+	margin:0px;
+	padding:0px;
+}
+
+#calc-editor #item-picker ul,
+#calc-editor #item-picker li {
+	list-style:none;
+}
+
+#calc-editor #element-picker {
+	float:left;
+	width:230px;
+	margin-right:20px;
+}
+
+#calc-editor #element-picker .element-list li {
+	border:1px solid #ccc;
+	border-right:none;
+	background:#eee;
+	color:#000;
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+	padding:5px 10px;
+	cursor:pointer;
+	margin:5px 0px;
+	display:none;
+}
+
+#calc-editor #element-picker .element-list #element-regarding {
+	display:block;
+}
+
+#calc-editor #element-picker .element-list li.picked {
+	background:#ccc;
+	color:#fff;
+}
+
+#calc-editor #element-picker .element-list li.picked .kenedo-popup {
+	color:#000;
+}
+
+#calc-editor #element-picker .element-list li.shown,
+#calc-editor #element-attributes .xref-list li.shown {
+	display:list-item;
+}
+
+#calc-editor .calculation-list {
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+
+#calc-editor #element-picker .hidden-by-question-filter {
+	display:none!important;
+}
+
+#calc-editor #element-attributes {
+	float:left;
+	width:496px;
+	display:none;
+	padding-top:16px;
+}
+
+#calc-editor #element-attributes .xref-group {
+	display:none;
+}
+
+#calc-editor #element-attributes .xref-list li {
+	width:100%;
+	padding:0px;
+}
+
+#calc-editor h2 {
+	font-weight:normal;
+	font-size:1.2em;
+	margin-top:0px;
+}
+
+#calc-editor .notes {
+	float:right;
+	width:310px;
+	margin-left:10px;
+}
+
+#calc-editor #element-filter {
+	font-size: 14px;
+	padding: 4px 6px;
+	margin: 5px 0px;
+	width: 100%;
+	outline: none;
+	background: #fff;
+	display: block;
+	float: none;
+	line-height: 26px;
+	height: 26px;
+}
+
+#calc-editor ::-webkit-input-placeholder {
+	color:#333;
+}
+#calc-editor :-moz-placeholder {
+	color:#333;
+}
+#calc-editor ::-moz-placeholder {
+	color:#333;
+}
+#calc-editor :-ms-input-placeholder {
+	color:#333;
+}
+
+#calc-editor .hidden-helpers {
+	visibility:hidden;
+}
+
+#calc-editor .picker-tabs {
+	margin-top:10px;
+}
+
+#calc-editor .picker-tabs ul {
+	margin:0px;
+	padding:0px;
+	list-style:none;
+}
+
+#calc-editor .picker-tab {
+	display: inline-block;
+	padding: 5px 10px;
+	font-size: 15px;
+	background: #eee;
+	border: 1px solid #ccc;
+	border-bottom: none;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	cursor: pointer;
+	color: #333;
+	clear: none;
+	float: none;
+	margin: 0px;
+	min-width: 0px;
+}
+
+#calc-editor .picker-tab.selected-tab {
+	background: #fff;
+	color: #000;
+	position: relative;
+	bottom: -1px;
+	padding-top: 6px;
+}
+
+#calc-editor .picker-panels {
+	border:1px solid #ccc;
+	padding:20px 10px;
+}
+
+#calc-editor .picker-panels .panel {
+	display:none;
+}
+
+#calc-editor .picker-panels .panel.selected-panel {
+	display:block;
+}

@@ -1,0 +1,84 @@
+.modal .view-reviews {
+	padding:20px 20px;
+}
+
+.modal .view-reviews .page-title {
+	margin-top:0;
+}
+
+.view-reviews .trigger-close-modal,
+.view-reviewform .trigger-close-modal {
+	display:none;
+	position:absolute;
+	top:15px;
+	right:20px;
+}
+
+.modal .view-reviews .trigger-close-modal,
+.modal .view-reviewform .trigger-close-modal{
+	display:block;
+}
+
+.view-reviews .review-list {
+	list-style: none;
+	margin:20px 0;
+	padding:0;
+}
+
+.view-reviews .review-list li {
+	margin:10px 0;
+	padding:0;
+}
+
+.view-reviews .review-excess {
+	display:none;
+}
+
+.view-reviews .review-list.show-all .review-excess {
+	display:block;
+}
+
+.view-reviews .by-line {
+	font-weight: bold;
+}
+
+.view-reviews .rating-stars {
+	margin:5px 0;
+}
+
+.view-reviews .wrapper-review-form {
+	display:none;
+}
+
+.modal-content>.view-reviewform {
+	padding:20px;
+}
+
+.view-reviewform .form-heading {
+	font-weight:bold;
+	margin:5px 0;
+}
+
+.view-reviewform .review-form textarea {
+	height:200px;
+}
+
+.view-reviewform .review-form .rating-star {
+	font-size:25px;
+}
+
+.view-reviewform .review-form .wrapper-rating-stars {
+	margin:10px 0;
+}
+
+.view-reviewform .review-form .invalid {
+	border:1px solid red;
+}
+
+.view-reviewform .review-form .invalid.wrapper-rating-stars {
+	border:none;
+}
+
+.view-reviewform .review-form .invalid .rating-star::before {
+	color:red;
+}

@@ -51,7 +51,7 @@ class Recurring implements InstallSchemaInterface
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
     ) {
-        $this->_copyLibAssets();
+//        $this->_copyLibAssets();
         $this->_applyCbUpgrades($setup);
 
     }
@@ -105,15 +105,15 @@ class Recurring implements InstallSchemaInterface
 
         // Set an area code (there's none when this runs via magento module:upgrade)
         // and the lacking area code makes URL generation fail.
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $state =  $objectManager->get('Magento\Framework\App\State');
-
-        try {
-            $state->getAreaCode();
-        }
-        catch (\Exception $e) {
-            $state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
-        }
+//        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+//        $state =  $objectManager->get('Magento\Framework\App\State');
+//
+//        try {
+//            $state->getAreaCode();
+//        }
+//        catch (\Exception $e) {
+//            $state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
+//        }
 
         $connection = $setup->getConnection();
 

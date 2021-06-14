@@ -19,6 +19,4 @@
     <type name="Magento\Wishlist\Model\Wishlist">
         <plugin name="configbox_wishlist" type="Rovexo\Configbox\Plugin\Wishlist" />
     </type>
-    <preference for="Magento\Framework\Component\ComponentRegistrar"
-                type="Rovexo\Configbox\Preferences\Component\ComponentRegistrar"/>
 </config>
