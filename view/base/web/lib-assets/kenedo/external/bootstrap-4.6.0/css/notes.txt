@@ -1,0 +1,3 @@
+when you use a new version, check the bootstrap.scss for new imports, namespace with .cb-content, figure out which
+files can't be namespaced (e.g. modal, popover, tooltip) and add them non-namespaced. Then run sass to make a new css
+file.

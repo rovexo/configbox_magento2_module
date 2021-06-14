@@ -1,0 +1,425 @@
+.view-adminruleeditor {
+	font-size:13px;
+}
+
+.view-adminruleeditor .note-pick-question,
+.view-adminruleeditor .note-drag-conditions {
+	font-weight:normal;
+	font-size:14px;
+	margin-top: 0;
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+
+.view-adminruleeditor .editor-heading {
+	margin-top:0;
+}
+
+.view-adminruleeditor .editor-heading select {
+	display:inline-block;
+	width:340px!important;
+	border:1px solid #ccc;
+	box-shadow: none;
+	height: 34px;
+	padding: 4px 10px;
+	font-size:14px;
+}
+
+.view-adminruleeditor .heading-conditions {
+	font-size:16px;
+	margin-left:11px;
+}
+
+.view-adminruleeditor fieldset {
+	border:1px solid #ccc;
+	padding:5px;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+.view-adminruleeditor select {
+	float:none;
+	margin:0px;
+}
+
+.view-adminruleeditor .hidden-helpers {
+	visibility:hidden;
+}
+
+.view-adminruleeditor .rule-area {
+	padding:15px 2px 7px;
+	clear:both;
+}
+
+.view-adminruleeditor #condition-picker {
+	padding:0;
+}
+
+@media (max-width:599px) {
+	.view-adminruleeditor .hint-combinators {
+		margin:5px 12px;
+	}
+
+	.view-adminruleeditor #combinator-blueprints {
+		margin-left:8px;
+	}
+
+}
+
+@media (max-width:800px) {
+
+	.view-adminruleeditor .editor-heading {
+		clear:both;
+	}
+}
+
+@media (min-width:600px) {
+
+	.view-adminruleeditor .hint-combinators {
+		float:right;
+		margin-top: 0px;
+		margin-right:5px;
+	}
+
+	.view-adminruleeditor #combinator-blueprints {
+		float:right;
+		clear:right;
+		margin-top: 1px;
+		text-align:right;
+		margin-right:5px;
+	}
+
+}
+
+
+
+
+.view-adminruleeditor .item {
+	display:inline-block;
+}
+
+.view-adminruleeditor .condition {
+	border:1px solid #4DA6FF;
+	background:#B3D9FF;
+	color:#000;
+	border-radius:15px;
+	margin:2px 2px;
+	padding:6px 7px 3px;
+	cursor:pointer;
+	vertical-align: top;
+	min-height:30px;
+}
+
+.view-adminruleeditor .condition input[type=text] {
+	float:none;
+	margin:0px;
+	padding:0px 2px;
+	width:60px;
+	border-color:#4DA6FF;
+	transition-property: width;
+	transition-duration: 0.1s;
+	position: relative;
+	top: -1px;
+	display: inline-block;
+	height: auto;
+	font-size: 1em;
+}
+
+.view-adminruleeditor .rule-area.squeeze .condition {
+	max-width:120px;
+	text-align:center;
+	overflow:hidden;
+}
+	
+.view-adminruleeditor .condition.selected {
+	background:#4DA6FF;
+	color:#fff;
+}
+
+.view-adminruleeditor .bracket {
+	border:1px solid #e5e631;
+	background:#FFFFB3;
+	border-radius:10px;
+	padding:5px 10px;
+	cursor:pointer;
+	margin:-5px 2px 7px;
+	vertical-align: top;
+}
+
+.view-adminruleeditor .bracket.selected {
+	background:#FDFE4C;
+}
+
+.view-adminruleeditor .combinator {
+	border:1px solid #FFA54C;
+	background:#FFD9B3;
+	color:#000;
+	border-radius:15px;
+	padding:6px 7px 7px;
+	cursor:pointer;
+	margin:2px 2px;
+	text-transform:uppercase;
+	vertical-align:top;
+}
+
+.view-adminruleeditor .squeeze .combinator {
+	margin-top:12px;
+}
+
+.view-adminruleeditor .combinator.selected {
+	background:#FFA54C;
+	color:#fff;
+}
+
+.view-adminruleeditor .drop-area {
+	border: 2px dashed #ccc;
+	margin-left: 2px;
+	width: 25px;
+	height: 30px;
+	white-space: nowrap;
+	display: inline-block;
+	margin-top: 2px;
+}
+
+.view-adminruleeditor .drop-area.initial {
+	padding: 6px 10px 7px;
+	width: auto;
+	font-size: 14px;
+	margin-left: -1px;
+}
+
+.view-adminruleeditor .drop-area.drag-over {
+	border-color:#000;
+}
+
+.view-adminruleeditor .conditions-list {
+	list-style: none;
+	margin:0;
+	padding:0;
+}
+
+.view-adminruleeditor .conditions-list li {
+	width:100%;
+	padding:0;
+	margin:0;
+	list-style: none;
+}
+
+.view-adminruleeditor #operator-picker-blueprint {
+	display:none;
+}
+
+.view-adminruleeditor .operator-picker {
+	color:#000;
+	cursor:pointer;
+	margin:5px 2px;
+	display:inline-block;
+
+	position:absolute;
+	width:500px;
+	left:-50px;
+	top:10px;
+	z-index: 400;
+}
+
+.view-adminruleeditor .operator-picker .operator {
+	padding:5px 7px;
+	display:block;
+	float:left;
+	border:1px solid #FF4D4D;
+	border-left:none;
+	background:#FFB3B3;
+	text-align:center;
+	white-space:nowrap;
+	margin:0px;
+}
+
+.view-adminruleeditor .operator-picker .operator:first-child {
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-left:1px solid #FF4D4D;
+}
+
+.view-adminruleeditor .operator-picker .operator:last-child {
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
+
+.view-adminruleeditor .operator-picker .operator.active {
+	background:#FF4D4D;
+	color:#fff;
+}
+
+.view-adminruleeditor .operator-picker .operator:hover {
+	background:#FF4D4D;
+}
+
+.view-adminruleeditor .condition .condition-operator {
+	position:relative;
+	font-weight:bold;
+}
+
+.view-adminruleeditor .condition .condition-operator * {
+	font-weight:normal;
+}
+
+.view-adminruleeditor .picker-tabs {
+	margin-top:0px;
+}
+
+.view-adminruleeditor .picker-tabs ul {
+	margin:0px;
+	padding:0px;
+	list-style:none;
+}
+
+.view-adminruleeditor .picker-tab {
+	display: inline-block;
+	padding: 5px 11px;
+	font-size: 15px;
+	background: #eee;
+	border: 1px solid #ccc;
+	border-bottom: none;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	cursor: pointer;
+	color: #333;
+	clear: none;
+	float: none;
+	margin: 0px;
+	min-width: 0px;
+}
+
+.view-adminruleeditor .picker-tab.selected-tab {
+	background: #fff;
+	color: #000;
+	position: relative;
+	bottom: -1px;
+	padding-top: 6px;
+}
+
+.view-adminruleeditor .picker-panels {
+	border:1px solid #ccc;
+	padding:20px 10px;
+}
+
+.view-adminruleeditor .picker-panels .panel {
+	display:none;
+	padding-bottom:0;
+	margin-bottom:0;
+	box-shadow: none;
+}
+
+.view-adminruleeditor .picker-panels .panel-calculation {
+	overflow:auto;
+}
+
+.view-adminruleeditor .picker-panels .panel.selected-panel {
+	display:block;
+}
+
+/* Panel ElementAttributes - START */
+.view-adminruleeditor .product-filter select,
+.view-adminruleeditor .page-filters select {
+	width:100%;
+	font-size:1em;
+}
+
+.view-adminruleeditor .product-filter,
+.view-adminruleeditor .page-filters {
+	margin-bottom:5px;
+}
+
+.view-adminruleeditor .question-picker select {
+	width:100%;
+}
+
+.view-adminruleeditor .question-picker ul,
+.view-adminruleeditor #question-attributes ul {
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+
+.view-adminruleeditor .question-picker .question-list li {
+	border:1px solid #ccc;
+	border-right:none;
+	background:#eee;
+	color:#000;
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+	padding:5px 10px;
+	cursor:pointer;
+	margin:5px 0px;
+	display:none;
+}
+
+.view-adminruleeditor .question-picker .question-list li.picked {
+	background:#ccc;
+	color:#fff;
+}
+
+.view-adminruleeditor .question-picker .question-list li.shown {
+	display:list-item;
+}
+
+.view-adminruleeditor .question-picker .question-list .hidden-by-question-filter,
+.view-adminruleeditor .question-picker .question-list .hidden-by-question-filter.shown {
+	display:none;
+}
+
+.view-adminruleeditor #question-filter {
+	font-size: 14px;
+	padding: 4px 6px;
+	margin: 5px 0px;
+	width: 100%;
+	outline: none;
+	background: #fff;
+	display: block;
+	float: none;
+	line-height: 26px;
+	height: 26px;
+}
+
+.view-adminruleeditor #question-attributes {
+	display:none;
+	padding-left:0px;
+}
+
+.view-adminruleeditor #question-attributes h2 {
+	margin-left:10px;
+}
+
+.view-adminruleeditor #question-attributes h3 {
+	font-size:16px;
+	margin-top:0;
+}
+
+.view-adminruleeditor #question-attributes .conditions-list li.shown {
+	display:list-item;
+}
+
+.view-adminruleeditor #question-attributes .conditions-group-heading {
+	font-weight:bold;
+	margin-top:5px;
+	margin-left:10px;
+	margin-bottom:5px;
+	font-size:14px;
+}
+
+.view-adminruleeditor #question-attributes .conditions-list .answer-group {
+	display:none;
+	padding:0px;
+}
+
+.view-adminruleeditor .notes {
+
+}
+
+/* Panel ElementAttributes - END */
+
+/* Panel Example - START */
+.view-adminruleeditor .custom-conditions-notes {
+	margin-bottom:15px;
+}
+/* Panel Example - END */

@@ -1,0 +1,1 @@
+When you put in a newer version, change the AMD required module from jQuery to cbj. See first few lines in js file.

@@ -1,0 +1,205 @@
+html, body {
+	margin:0;
+	padding:0;
+}
+
+body {
+	margin: 110pt 1.5cm 100pt;
+
+	font-family: Helvetica;
+	font-size:9pt;
+}
+
+#view-orderslip table {
+	border-collapse: collapse;
+}
+
+#view-orderslip th {
+	text-align:left;
+}
+
+#view-orderslip .layout-table {
+	width:100%;
+}
+
+#view-orderslip .layout-table td {
+	border:none;
+	padding:0;
+}
+
+#view-orderslip .layout-table td.left-column,
+#view-orderslip .layout-table td.right-column {
+	padding:0px;
+	vertical-align: top;
+}
+
+#view-orderslip .layout-table td.right-column {
+	text-align:right;
+}
+
+#view-orderslip .order-data {
+	float:right;
+}
+
+#view-orderslip .customer-information {
+	margin-top:80pt;
+	margin-bottom:25pt;
+}
+
+#view-orderslip .customer-information .left-column .wrapper {
+	height:70pt;
+}
+
+#view-orderslip .customer-information .right-column .key {
+	font-weight:bold;
+	padding-right:4pt;
+}
+
+#view-orderslip .customer-information .right-column .value {
+	text-align:right;
+}
+
+#view-orderslip .order-base-data .order-id {
+	margin-top:1em;
+}
+
+#view-orderslip .wrapper-order-overview {
+	margin-top:18pt;
+	margin-bottom:18pt;
+}
+
+#view-orderslip .wrapper-order-overview h2 {
+	margin-bottom:8pt;
+}
+
+#view-orderslip .order-overview table {
+	width:100%;
+}
+
+#view-orderslip .order-overview th {
+	padding:3pt 5pt;
+	border:1px solid #ddd;
+	font-weight:bold;
+	background-color:#efefef;
+}
+
+#view-orderslip .order-overview td {
+	padding:3pt 5pt;
+	border:1px solid #ddd;
+	vertical-align: bottom;
+	line-height:1.3em;
+}
+
+#view-orderslip .order-overview .item-price {
+	text-align:right;
+	white-space:nowrap;
+	width:18pt;
+}
+
+#view-orderslip .order-overview .position-tax-rate {
+	color:#666;
+	font-size:9pt;
+}
+
+#view-orderslip .order-overview .sub-total-merchandise,
+#view-orderslip .order-overview .grand-total {
+	font-weight:bold;
+}
+
+#view-orderslip .order-overview .delivery-title,
+#view-orderslip .order-overview .payment-title {
+	font-weight:bold;
+}
+
+#view-orderslip .order-overview a {
+	display:none;
+}
+
+#view-orderslip .note-details-next-page {
+	page-break-after: always;
+}
+
+#view-orderslip .products-overview {
+	margin-top:18pt;
+	margin-bottom:18pt;
+}
+
+#view-orderslip .products-overview h2 {
+	margin-top:0;
+}
+
+#view-orderslip .products-overview .position-image {
+	margin-bottom:10pt;
+}
+
+#view-orderslip .products-overview .position-configuration {
+	width:100%!important;
+}
+
+#view-orderslip .products-overview .position-record {
+	width:100%;
+}
+
+#view-orderslip .products-overview .position-selection-table {
+	width:100%;
+}
+
+#view-orderslip .products-overview .position-selection-table th {
+	padding:3pt 5pt;
+	background-color:#efefef;
+	font-weight:bold;
+	border:1px solid #ddd;
+}
+
+#view-orderslip .products-overview .position-selection-table td {
+	padding:3pt 5pt;
+	border:1px solid #ddd;
+}
+
+#view-orderslip .products-overview .position-details {
+	margin-bottom:18pt;
+	page-break-after: always;
+}
+
+#view-orderslip .products-overview .position-details:last-of-type {
+	margin-bottom: 0;
+	page-break-after: avoid;
+}
+
+#view-orderslip .products-overview .position-product-title {
+	font-weight:bold;
+	font-size:10pt;
+	margin-bottom:2pt;
+}
+
+#view-orderslip .products-overview .position-product-sku {
+	color:#aaa;
+	margin-top:0;
+	margin-bottom:4pt;
+}
+
+#view-orderslip .products-overview .position-total {
+	font-weight:bold;
+}
+
+#view-orderslip .products-overview .price-field {
+	text-align:right;
+	white-space:nowrap;
+	width:18pt;
+}
+
+#view-orderslip .products-overview .product-total .key,
+#view-orderslip .products-overview .element-title {
+	display:inline-block;
+	min-width:80pt;
+}
+
+#view-orderslip .item-price,
+#view-orderslip .price-field {
+	display:none;
+}
+
+#view-orderslip .position-total,
+#view-orderslip .position-base-price {
+	display:none;
+}
