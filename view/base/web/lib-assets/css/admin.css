@@ -1701,6 +1701,10 @@ body>#footer {
 	margin:10px 0;
 }
 
+.cb-content .kenedo-property.property-type-shapediverparameter .parameter-selection-help-heading {
+	margin-top:20px;
+}
+
 .view-admindashboard .license .key {
 	font-weight:bold;
 }

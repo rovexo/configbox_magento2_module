@@ -747,3 +747,7 @@
 	border-color:#bbb;
 	cursor:default;
 }
+
+#sdv-container-canvas {
+	height:400px!important;
+}

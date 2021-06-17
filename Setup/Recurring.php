@@ -2,7 +2,6 @@
 
 namespace Rovexo\Configbox\Setup;
 
-use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Setup\ModuleContextInterface;
@@ -51,48 +50,7 @@ class Recurring implements InstallSchemaInterface
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
     ) {
-//        $this->_copyLibAssets();
         $this->_applyCbUpgrades($setup);
-
-    }
-
-    /**
-     * Copies the CB lib's assets dir to M2's accessible lib/web dir
-     * @throws FileSystemException
-     */
-    protected function _copyLibAssets()
-    {
-
-        $sourceDir = $this->_directoryList->getRoot() . DIRECTORY_SEPARATOR .
-            "vendor" . DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR .
-            "configbox-php" . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR .
-            "Rovexo" . DIRECTORY_SEPARATOR . "Configbox" . DIRECTORY_SEPARATOR .
-            "assets";
-
-        $targetDir = $this->_directoryList->getPath(DirectoryList::LIB_WEB) .
-            DIRECTORY_SEPARATOR . "rovexo" . DIRECTORY_SEPARATOR . "configbox" .
-            DIRECTORY_SEPARATOR . "assets";
-
-        // On development we use a symlink - if we got one, we ignore the rest
-        if (is_link($targetDir)) {
-            return;
-        }
-
-        // Try removing the existing dir and copying it fresh
-        try {
-            if ($this->_file->isExists($targetDir)) {
-                $this->_file->deleteDirectory($targetDir);
-            }
-
-            $this->_file->createDirectory($targetDir);
-            $this->_copyDirectory($sourceDir, $targetDir);
-        }
-        catch (FileSystemException $e) {
-            $msg = "\nThe directory 'lib/web/rovexo' could not be recreated.";
-            $msg .= " Please make sure this dir is writable and run setup:upgrade again.";
-            $phrase = new \Magento\Framework\Phrase($msg);
-            throw new FileSystemException($phrase);
-        }
 
     }
 
@@ -102,18 +60,6 @@ class Recurring implements InstallSchemaInterface
      */
     protected function _applyCbUpgrades($setup)
     {
-
-        // Set an area code (there's none when this runs via magento module:upgrade)
-        // and the lacking area code makes URL generation fail.
-//        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-//        $state =  $objectManager->get('Magento\Framework\App\State');
-//
-//        try {
-//            $state->getAreaCode();
-//        }
-//        catch (\Exception $e) {
-//            $state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
-//        }
 
         $connection = $setup->getConnection();
 
@@ -125,43 +71,4 @@ class Recurring implements InstallSchemaInterface
 
     }
 
-    /**
-     * Copy directory
-     *
-     * @param string $src Source
-     * @param string $dst Destination
-     *
-     * @return void
-     */
-    protected function _copyDirectory($src, $dst)
-    {
-
-        // open the source directory
-        $dir = opendir($src);
-
-        // Make the destination directory if not exist
-        if (!file_exists($dst)) {
-            $this->_file->createDirectory($dst);
-        }
-
-        // Loop through the files in source directory
-        foreach (scandir($src) as $file) {
-            if (($file != '.') && ($file != '..')) {
-                if (is_dir($src . DIRECTORY_SEPARATOR . $file)) {
-                    // Recursively calling copyDirectory method for sub directory
-                    $this->_copyDirectory(
-                        $src . DIRECTORY_SEPARATOR . $file,
-                        $dst . DIRECTORY_SEPARATOR . $file
-                    );
-                } else {
-                    copy(
-                        $src . DIRECTORY_SEPARATOR . $file,
-                        $dst . DIRECTORY_SEPARATOR . $file
-                    );
-                }
-            }
-        }
-
-        closedir($dir);
-    }
 }

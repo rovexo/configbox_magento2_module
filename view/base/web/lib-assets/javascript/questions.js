@@ -1452,6 +1452,9 @@ define(['cbj', 'configbox/configurator'], function(cbj, configurator) {
 						// Start reading (see event handler above)
 						reader.readAsDataURL(droppedFiles[0]);
 
+						// Set the File for SD module to pick it up later
+						question.data('file', droppedFiles[0]);
+
 						// Get FormData object and collect all form data
 						var formData = new FormData();
 
@@ -1540,6 +1543,7 @@ define(['cbj', 'configbox/configurator'], function(cbj, configurator) {
 			if (!selection) {
 				cbj('#question-' + questionId).data('file-contents', '');
 				cbj('#question-' + questionId).data('file-url', '');
+				cbj('#question-' + questionId).data('file', '');
 				cbj('#question-' + questionId + ' .upload-current-file').removeClass('has-file');
 				cbj('#question-' + questionId + ' .upload-current-file .file-name').text('');
 			}
