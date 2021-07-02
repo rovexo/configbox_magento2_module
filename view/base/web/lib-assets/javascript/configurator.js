@@ -519,13 +519,22 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	configurator.registeredQuestionTypes = {};
 
 	/**
+	 * @deprecated Use registerQuestionType instead
+	 * @param {string} type
+	 * @param {string} question
+	 */
+	configurator.registerQuestion = function(type, questionObject) {
+		configurator.registerQuestionType(type, questionObject);
+	};
+
+	/**
 	 * Registers a question type for initialization later.
 	 * @see initQuestions
 	 * @param {string} type 		Name of the question type in lower case (built-in ones are named
-	 * 								checkbox, radiobuttons, etc)
+	 * 								checkbox, radio-buttons, etc)
 	 * @param {object} question		Object holding its init function and event handlers (compare with built-in objects)
 	 */
-	configurator.registerQuestion = function(type, question) {
+	configurator.registerQuestionType = function(type, questionObject) {
 
 		// This method checks if the questionType got the needed functions
 		// Prepare the list with functions the question objects needs to have
@@ -547,7 +556,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		// Loop through them and check the provided question object for the methods
 		for (var i in requiredMethods) {
 			if (requiredMethods.hasOwnProperty(i)) {
-				if (typeof(question[requiredMethods[i]]) !== 'function') {
+				if (typeof(questionObject[requiredMethods[i]]) !== 'function') {
 					missingMethods.push(requiredMethods[i]);
 				}
 			}
@@ -559,7 +568,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		}
 
 		// Otherwise, register the question
-		configurator.registeredQuestionTypes[type] = question;
+		configurator.registeredQuestionTypes[type] = questionObject;
 
 	};
 

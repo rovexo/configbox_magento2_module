@@ -1,0 +1,11 @@
+allow from all
+
+<IfModule mod_expires.c>
+	ExpiresActive on
+	ExpiresDefault "access plus 1 years"
+</IfModule>
+
+<IfModule mod_headers.c>
+	Header set Cache-Control "public"
+	Header always set Access-Control-Allow-Origin *
+</IfModule>

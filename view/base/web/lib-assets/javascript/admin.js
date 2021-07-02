@@ -52,8 +52,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 							tinyMCE.init({
 								convert_urls : false,
 								document_base_url : server.config.urlBase,
-								documentBaseURL : server.config.urlBase,
-								baseURL : server.config.urlTinyMceBase,
+								base_url : server.config.urlTinyMceBase,
 								suffix : (server.config.useMinifiedJs === true) ? '.min' : '',
 								target	 	: element,
 								plugins		: [
