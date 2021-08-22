@@ -936,6 +936,7 @@ width ourselves
 	margin:0px 0px 4px;
 	padding:0px;
 	font-weight:bold;
+	font-size:inherit;
 }
 
 .cb-content .property-type-translatable .translations .translation-label .kenedo-popup {
@@ -1165,6 +1166,10 @@ width ourselves
 	display:none;
 }
 
+.cb-content .property-type-multiselect  .checkbox-label {
+	font-size:inherit;
+}
+
 .cb-content .property-type-multiselect .checkbox-field .checkbox-label:before {
 	font-family: "Font Awesome 5 Free";
 	font-weight: normal;
@@ -1247,6 +1252,7 @@ select.join-select,
 	display: inline;
 	margin: 0px 0;
 	line-height:inherit;
+	font-size:inherit;
 }
 
 body>#footer {
@@ -1435,171 +1441,6 @@ body>#footer {
 
 
 /* KENEDO ADMIN - END */
-
-/* QUICKEDIT - START */
-
-.cb-content .quick-edit-buttons {
-	background:rgba(255, 255, 255, 0.7);
-	font-size:16px;
-	line-height:16px;
-	border-radius:2px;
-	padding:5px;
-	z-index:100;
-}
-
-.cb-content .touch-no .quick-edit-buttons {
-	opacity:0;
-	transition-property: opacity;
-	transition-duration: .5s;
-}
-
-.cb-content .touch-no .element:hover .quick-edit-buttons-option,
-.cb-content .touch-no .element:hover .quick-edit-buttons-element,
-.cb-content:hover .touch-no .quick-edit-buttons-product-listing-page,
-.cb-content:hover .touch-no .quick-edit-buttons-configuration-page,
-.cb-content .touch-no .listing-product:hover .quick-edit-buttons {
-	opacity:1;
-	transition-property: opacity;
-	transition-duration: .5s;
-}
-
-.cb-content .touch-no .quick-edit-buttons-configuration-page .quick-edit-buttons-content .fa:before {
-	margin-right:5px;
-}
-
-.cb-content .quick-edit-buttons .toolbarbutton {
-	display:inline-block;
-}
-
-.cb-content .quick-edit-buttons a {
-	display:inline-block;
-	font-size:14px;
-}
-
-.cb-content .quick-edit-buttons a:hover {
-	text-decoration:none;
-}
-
-.cb-content .quick-edit-buttons-product {
-	position:absolute;
-	top:0px;
-	right:0px;
-}
-
-.cb-content .quick-edit-buttons-product-listing-page {
-	position:absolute;
-	top:5px;
-	right:0px;
-	font-weight:bold;
-}
-
-.cb-content .quick-edit-buttons-product-listing-page .fa:before {
-	padding-right:3px;
-}
-
-.cb-content .quick-edit-buttons-product .fa:before {
-	padding-right:3px;
-}
-
-.cb-content .quick-edit-buttons-configuration-page {
-	position:absolute;
-	top:0px;
-	right:0px;
-	z-index:300;
-}
-
-.cb-content .quick-edit-buttons-element {
-	position:absolute;
-	top:3px;
-	right:5px;
-}
-
-.cb-content .quick-edit-buttons-option {
-	position:absolute;
-	top:0px;
-	right:0px;
-	padding:1px;
-}
-
-.cb-content .element.type-dropdown .quick-edit-buttons-option {
-	right:-30px;
-	z-index:10000;
-}
-
-.cb-content .quick-edit-buttons-configuration-page .quick-edit-buttons-content {
-	display:none;
-	z-index:30000;
-	padding:5px;
-	border-radius:10px;
-}
-
-.cb-content .listing-products .listing-product:first-child .quick-edit-buttons-product {
-	top:28px;
-}
-
-.cb-content .quick-edit-buttons-configuration-page .quick-edit-buttons-content .toolbarbutton {
-	display:block;
-	margin-bottom:4px;
-}
-
-.cb-content .image-picker .quick-edit-buttons-option {
-	right:4px;
-	top:4px;
-}
-
-.cb-content .xref {
-	position:relative;
-}
-
-.cb-content .no-heading .quick-edit-buttons-element,
-.cb-content .joined-element-end .quick-edit-buttons-element,
-.cb-content .joined-element .quick-edit-buttons-element {
-	padding:1px;
-	top:2px;
-}
-
-.cb-content .no-heading .quick-edit-buttons-option,
-.cb-content .joined-element-end .quick-edit-buttons-option,
-.cb-content .joined-element .quick-edit-buttons-option {
-	right:50px;
-	padding:1px;
-}
-
-.cb-content .quickedit-input {
-	outline:none;
-	padding:0px;
-}
-
-.cb-content .quick-edit-textfield-button {
-	font-size:14px;
-	position:relative;
-	margin-right:4px;
-}
-
-.cb-content .quick-edit-textarea-button {
-	font-size:16px;
-	position:relative;
-	margin-left:10px;
-	text-decoration:none;
-	float:right;
-}
-
-.cb-content .quick-edit-textarea-button .fa:before {
-	padding-right:4px;
-}
-
-/* QUICKEDIT - END */
-
-
-/* jQueryUI Slider - START */
-
-.cb-content .ui-slider .ui-slider-handle {
-	z-index:1;
-	outline:none;
-}
-
-/* jQueryUI Slider - END */
-
 
 /* COLORBOX STYLING - START */
 

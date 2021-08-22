@@ -276,7 +276,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 */
 	configurator.queueRequest = function(fn) {
 		if (configurator.requestInProgress) {
-			cbj(document).on('serverResponseReceived', fn);
+			cbj(document).one('serverResponseReceived', fn);
 		}
 		else {
 			fn();
@@ -440,7 +440,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 * @param {Number} 	questionId
 	 */
 	configurator.onQuestionActivation = function(event, questionId) {
-		cbj('#question-' + questionId).removeClass('non-applying-question').addClass('applying-question');
+		configurator.getQuestionDiv(questionId).removeClass('non-applying-question').addClass('applying-question');
 	};
 
 	/**
@@ -449,7 +449,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 * @param {Number} 	questionId
 	 */
 	configurator.onQuestionDeactivation = function(event, questionId) {
-		cbj('#question-' + questionId).addClass('non-applying-question').removeClass('applying-question');
+		configurator.getQuestionDiv(questionId).addClass('non-applying-question').removeClass('applying-question');
 	};
 
 	/**
@@ -622,6 +622,15 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 						questionType.initEach();
 					}
 
+					cbj(this).on('cbQuestionActivation', 		questionType.onQuestionActivation);
+					cbj(this).on('cbQuestionDeactivation', 		questionType.onQuestionDeactivation);
+					cbj(this).on('cbAnswerActivation', 			questionType.onAnswerActivation);
+					cbj(this).on('cbAnswerDeactivation', 		questionType.onAnswerDeactivation);
+					cbj(this).on('cbSystemSelectionChange', 	questionType.onSystemSelectionChange);
+					cbj(this).on('cbValidationChange', 			questionType.onValidationChange);
+					cbj(this).on('cbValidationMessageShown',	questionType.onValidationMessageShown);
+					cbj(this).on('cbValidationMessageCleared',	questionType.onValidationMessageCleared);
+
 					// The rest runs only once per page load
 					if (configurator.initializedQuestionTypes.indexOf(type) !== -1) {
 						return;
@@ -629,16 +638,6 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 					configurator.initializedQuestionTypes.push(type);
 
 					questionType.init();
-
-					cbj(document).on('cbQuestionActivation', 		questionType.onQuestionActivation);
-					cbj(document).on('cbQuestionDeactivation', 		questionType.onQuestionDeactivation);
-					cbj(document).on('cbAnswerActivation', 			questionType.onAnswerActivation);
-					cbj(document).on('cbAnswerDeactivation', 		questionType.onAnswerDeactivation);
-					cbj(document).on('cbSystemSelectionChange', 	questionType.onSystemSelectionChange);
-					cbj(document).on('cbValidationChange', 			questionType.onValidationChange);
-					cbj(document).on('cbValidationMessageShown',	questionType.onValidationMessageShown);
-					cbj(document).on('cbValidationMessageCleared',	questionType.onValidationMessageCleared);
-
 
 				});
 
@@ -882,9 +881,9 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			preloadTimeout = window.setTimeout(preloadVisualization, preloadVisualizationDelay);
 		});
 
-		// If a question or answer gets activates, load any images in it right away
-		cbj(document).on('cbQuestionActivation cbAnswerActivation', function(event, questionId) {
-			preloadVisualization(cbj('#question-' + questionId));
+		cbj('.question').one('cbQuestionActivation cbAnswerActivation', function(event, questionId) {
+			var question = configurator.getQuestionDiv(questionId);
+			preloadVisualization(question);
 		});
 
 	};
@@ -1048,7 +1047,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 * @property {Number} questionId
 		 * @property {String} text
 		 */
-		cbj(document).trigger('cbValidationMessageShown', [questionId, text]);
+		configurator.getQuestionDiv(questionId).trigger('cbValidationMessageShown', [questionId, text]);
 	};
 
 	/**
@@ -1060,7 +1059,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 * @event cbValidationMessageCleared
 		 * @property {Number} questionId
 		 */
-		cbj(document).trigger('cbValidationMessageCleared', [questionId]);
+		configurator.getQuestionDiv(questionId).trigger('cbValidationMessageCleared', [questionId]);
 	};
 
 	/**
@@ -1073,7 +1072,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 *
 	 * @param {number} 			questionId 	- The question ID
 	 * @param {null|string=} 	selection 	- The machine readable selection
-	 * @param {null|string=} 		outputValue - The human readable selection
+	 * @param {null|string=} 	outputValue - The human readable selection
 	 * @param {string=}			selectedBy  - Indicates if the user or the system made the selection (values are 'system' or 'user'), defaults to 'user'
 	 *
 	 * @fires cbSystemSelectionChange
@@ -1089,9 +1088,11 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			throw('selectedBy parameter is neither \'user\' nor \'system\'. Was \'' + selectedBy + '\'');
 		}
 
+		var question = configurator.getQuestionDiv(questionId);
+
 		// Set the changed selection and output value in the question's wrapping div
-		cbj('#question-' + questionId).data('selection', selection);
-		cbj('#question-' + questionId).data('outputValue', outputValue);
+		question.data('selection', selection);
+		question.data('outputValue', outputValue);
 
 		if (selectedBy === 'system') {
 
@@ -1101,7 +1102,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			 * @property {string} selection - The machine-readable selection
 			 * @property {string} outputValue - The human-readable selection
 			 */
-			cbj(document).trigger('cbSystemSelectionChange', [questionId, selection, outputValue]);
+			question.trigger('cbSystemSelectionChange', [questionId, selection, outputValue]);
 
 		}
 
@@ -1111,7 +1112,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 * @property {string} selection - The machine-readable selection
 		 * @property {string} outputValue - The human-readable selection
 		 */
-		cbj(document).trigger('cbSelectionChange', [questionId, selection, outputValue]);
+		question.trigger('cbSelectionChange', [questionId, selection, outputValue]);
 
 	};
 
@@ -1126,7 +1127,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			/**
 			 * @event cbValidationChange
 			 */
-			cbj(document).trigger('cbValidationChange', [questionId, validationValue]);
+			configurator.getQuestionDiv(questionId).trigger('cbValidationChange', [questionId, validationValue]);
 		});
 
 	};
@@ -1157,13 +1158,13 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 					/**
 					 * @event cbQuestionActivation
 					 */
-					cbj(document).trigger('cbQuestionActivation', [questionId]);
+					configurator.getQuestionDiv(questionId).trigger('cbQuestionActivation', [questionId]);
 				}
 				else {
 					/**
 					 * @event cbQuestionDeactivation
 					 */
-					cbj(document).trigger('cbQuestionDeactivation', [questionId]);
+					configurator.getQuestionDiv(questionId).trigger('cbQuestionDeactivation', [questionId]);
 				}
 
 			}
@@ -1183,13 +1184,15 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 						/**
 						 * @event cbAnswerActivation
 						 */
-						cbj(document).trigger('cbAnswerActivation', [questionId, answerId]);
+
+						configurator.getQuestionDiv(questionId).trigger('cbAnswerActivation', [questionId, answerId]);
+
 					}
 					else {
 						/**
 						 * @event cbAnswerDeactivation
 						 */
-						cbj(document).trigger('cbAnswerDeactivation', [questionId, answerId]);
+						configurator.getQuestionDiv(questionId).trigger('cbAnswerDeactivation', [questionId, answerId]);
 					}
 
 
@@ -1288,7 +1291,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 * @returns {null|string}
 	 */
 	configurator.getCurrentSelection = function(questionId) {
-		return cbj('#question-' + questionId).data('selection');
+		return configurator.getQuestionDiv(questionId).data('selection');
 	};
 
 	/**
@@ -1313,6 +1316,15 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 */
 	configurator.getPageId = function() {
 		return parseInt(cbj('.kenedo-view.view-configuratorpage').data('page-id'));
+	};
+
+	/**
+	 * Gets you the wrapper div of the given question
+	 * @param {Number} questionId CB Question ID
+	 * @returns {jQuery} jQuery collection with question wrapper
+	 */
+	configurator.getQuestionDiv = function(questionId) {
+		return cbj('.question[data-question-id=' + questionId + ']');
 	};
 
 	/**
