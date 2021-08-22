@@ -336,10 +336,6 @@
 	border-radius: 4px 0 0 4px;
 }
 
-.cb-content .question.type-calendar .form-group {
-	margin-bottom: 0;
-}
-
 .cb-content .question.type-calendar.non-applying-question.grey-out-non-applying .trigger-show-calendar {
 	color: #ccc;
 }
@@ -717,20 +713,17 @@
 	width: 15px;
 }
 
-.view-configuratorpage .quick-edit-buttons-component,
-.view-configuratorpage .quick-edit-buttons-option {
+.view-configuratorpage .quick-edit-buttons-answer {
 	float: right;
 	margin-left: 5px;
 }
 
-.view-configuratorpage .quick-edit-buttons-question,
-.view-configuratorpage .quick-edit-buttons-element {
+.view-configuratorpage .quick-edit-buttons-question {
 	float: right;
 	margin-left: 5px;
 }
 
-.view-configuratorpage .question.type-images .quick-edit-buttons-component,
-.view-configuratorpage .question.type-images .quick-edit-buttons-option {
+.view-configuratorpage .question.type-images .quick-edit-buttons-answer {
 	position: absolute;
 	top: 5px;
 	left: 20px;

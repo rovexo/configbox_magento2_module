@@ -43,8 +43,7 @@
 			'configbox/customerform':		'javascript/customerform',
 			'configbox/server':				'javascript/server',
 			'configbox/configurator': 		'javascript/configurator',
-			'configbox/productlisting': 	'javascript/productlisting.min',
-			'configbox/shapediver': 		'javascript/shapediver',
+			'configbox/productlisting': 	'javascript/productlisting',
 			'configbox/user': 				'javascript/user',
 			'configbox/questions': 			'javascript/questions',
 			'configbox/admin': 				'javascript/admin',
@@ -188,104 +187,100 @@
 				var moduleIds, calls = [];
 
 				// First deal, with the one-off calls
-				if (moduleCallsOnce) {
+				// Make sure we're empty
+				moduleIds = [];
+				calls = [];
 
-					// Make sure we're empty
-					moduleIds = [];
-					calls = [];
+				// Loop through the module calls
+				cbj.each(moduleCallsOnce, function(i, moduleCall) {
 
-					// Loop through the module calls
-					cbj.each(moduleCallsOnce, function(i, moduleCall) {
+					var moduleId, call;
 
-						var moduleId, call;
+					// If we got a ::, then split between moduleId and call
+					if (moduleCall.split('::', 2).length === 2) {
+						moduleId = moduleCall.split('::', 2)[0];
+						call = moduleCall.split('::', 2)[1];
+					}
+					// Otherwise leave call null
+					else {
+						moduleId = moduleCall;
+						call = null;
+					}
 
-						// If we got a ::, then split between moduleId and call
-						if (moduleCall.split('::', 2).length === 2) {
-							moduleId = moduleCall.split('::', 2)[0];
-							call = moduleCall.split('::', 2)[1];
-						}
-						// Otherwise leave call null
-						else {
-							moduleId = moduleCall;
-							call = null;
-						}
+					// Push moduleIds and calls (making sure we keep array indices same)
+					moduleIds.push(moduleId);
+					calls.push(call);
 
-						// Push moduleIds and calls (making sure we keep array indices same)
-						moduleIds.push(moduleId);
-						calls.push(call);
+				});
 
-					});
+				// No the same for recurring init calls
+				cbj.each(moduleCallsEach, function(i, moduleCall) {
 
-					// No the same for recurring init calls
-					cbj.each(moduleCallsEach, function(i, moduleCall) {
+					var moduleId, call;
 
-						var moduleId, call;
+					if (moduleCall.split('::', 2).length === 2) {
+						moduleId = moduleCall.split('::', 2)[0];
+						call = moduleCall.split('::', 2)[1];
+					}
+					else {
+						moduleId = moduleCall;
+						call = null;
+					}
 
-						if (moduleCall.split('::', 2).length === 2) {
-							moduleId = moduleCall.split('::', 2)[0];
-							call = moduleCall.split('::', 2)[1];
-						}
-						else {
-							moduleId = moduleCall;
-							call = null;
-						}
+					moduleIds.push(moduleId);
+					calls.push(call);
 
-						moduleIds.push(moduleId);
-						calls.push(call);
+				});
 
-					});
+				// We might have no module calls at all
+				if (moduleIds.length !== 0) {
 
-					// We might have no module calls at all
-					if (moduleIds.length !== 0) {
+					// Now require all modules at once
+					cbrequire(moduleIds, function() {
 
-						// Now require all modules at once
-						cbrequire(moduleIds, function() {
+						// Make a copy of the function arguments for later
+						var args = arguments;
 
-							// Make a copy of the function arguments for later
-							var args = arguments;
+						// Loop through all calls
+						cbj.each(calls, function(i, call) {
 
-							// Loop through all calls
-							cbj.each(calls, function(i, call) {
+							// Put the module call string together again for next step
+							var moduleCall = moduleIds[i] + '::' + calls[i];
 
-								// Put the module call string together again for next step
-								var moduleCall = moduleIds[i] + '::' + calls[i];
+							// If the call is part of a one-off, then check if we did it already
+							if (moduleCallsOnce.indexOf(moduleCall) !== -1) {
+								// If so, skip that loop
+								if (doneModuleCalls.indexOf(moduleCall) !== -1) {
+									return;
+								}
+								else {
+									doneModuleCalls.push(moduleCall);
+								}
+							}
 
-								// If the call is part of a one-off, then check if we did it already
-								if (moduleCallsOnce.indexOf(moduleCall) !== -1) {
-									// If so, skip that loop
-									if (doneModuleCalls.indexOf(moduleCall) !== -1) {
-										return;
-									}
-									else {
-										doneModuleCalls.push(moduleCall);
-									}
+							// If there is a module call, do it
+							if (call !== null) {
+
+								// In case the function doesn't exist in that module, output some analysis data out
+								// and throw an exception
+								if (typeof(args[i][call]) !== 'function') {
+									console.log('Module contents:');
+									console.log(args[i]);
+									console.log('All module IDs:');
+									console.log(moduleIds);
+									console.log('All callback args:');
+									console.log(args);
+									throw('module function ' + moduleIds[i] + '::' + calls[i] + ' does not exist.');
 								}
 
-								// If there is a module call, do it
-								if (call !== null) {
+								// Now call that method
+								args[i][call](view);
 
-									// In case the function doesn't exist in that module, output some analysis data out
-									// and throw an exception
-									if (typeof(args[i][call]) !== 'function') {
-										console.log('Module contents:');
-										console.log(args[i]);
-										console.log('All module IDs:');
-										console.log(moduleIds);
-										console.log('All callback args:');
-										console.log(args);
-										throw('module function ' + moduleIds[i] + '::' + calls[i] + ' does not exist.');
-									}
-
-									// Now call that method
-									args[i][call](view);
-
-								}
-
-							});
+							}
 
 						});
 
-					}
+					});
 
 				}
 

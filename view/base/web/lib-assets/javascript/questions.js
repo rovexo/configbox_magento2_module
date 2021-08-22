@@ -16,6 +16,10 @@ define(['cbj', 'configbox/configurator'], function(cbj, configurator) {
 
 		initEach: function() {
 
+			if (cbj('.question.type-calendar').length === 0) {
+				return;
+			}
+
 			cbrequire(['cbj.ui'], function() {
 
 				cbj('.question.type-calendar').each(function() {
@@ -27,6 +31,8 @@ define(['cbj', 'configbox/configurator'], function(cbj, configurator) {
 					}
 					question.addClass('initialized');
 
+					cbj.datepicker.setDefaults(question.data('locale'));
+
 					var questionId = question.data('questionId');
 					var pickerDiv = cbj('#input-' + questionId);
 
@@ -35,8 +41,8 @@ define(['cbj', 'configbox/configurator'], function(cbj, configurator) {
 						dateFormat: 'yy-mm-dd',
 						altField: '#output-helper-' + questionId,
 						altFormat: configurator.getConfiguratorData('dateFormat'),
-						minDate: configurator.getQuestionPropValue(questionId, 'minval'),
-						maxDate: configurator.getQuestionPropValue(questionId, 'maxval'),
+						minDate: null,
+						maxDate: null,
 
 						onSelect: function(date) {
 
@@ -52,6 +58,26 @@ define(['cbj', 'configbox/configurator'], function(cbj, configurator) {
 						}
 
 					};
+
+					switch( configurator.getQuestionPropValue(questionId, 'calendar_validation_type_min')) {
+						case 'days':
+							parameters.minDate = parseInt(configurator.getQuestionPropValue(questionId, 'calendar_days_min'));
+					}
+					switch( configurator.getQuestionPropValue(questionId, 'calendar_validation_type_max')) {
+						case 'days':
+							parameters.maxDate = parseInt(configurator.getQuestionPropValue(questionId, 'calendar_days_max'));
+					}
+
+					switch (configurator.getQuestionPropValue(questionId, 'calendar_first_day')) {
+
+						case 'sunday':
+							parameters.firstDay = 0;
+							break;
+
+						case 'monday':
+							parameters.firstDay = 1;
+							break;
+					}
 
 					// Set click handler to show the calendar with the button
 					cbj(this).find('.trigger-show-calendar').on('click', function() {

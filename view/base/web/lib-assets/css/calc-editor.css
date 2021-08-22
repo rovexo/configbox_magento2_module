@@ -138,6 +138,7 @@
 	border:1px solid #4DA6FF;
 	width:20px;
 	height:15px;
+	min-height:unset;
 	line-height:15px;
 	outline:none;
 	color:#000;
