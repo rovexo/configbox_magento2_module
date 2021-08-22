@@ -1,7 +1,7 @@
 {
     "name": "rovexo/configbox-magento2",
     "description": "N/A",
-    "version": "3.3.11",
+    "version": "3.3.12",
     "type": "magento2-module",
     "license": "proprietary",
     "config": {
