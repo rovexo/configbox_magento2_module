@@ -509,7 +509,11 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 						// if we're in a modal, assume form was opened via an intra listing, refresh it
 						list = taskInfo.form.closest('.modal').data('parent-intra-listing');
 						if (list) {
-							kenedo.refreshList(list);
+							kenedo.refreshList(list, function() {
+								let listViewName = list.data('view');
+								let newList = cbj('.kenedo-view[data-view-id=' + listViewName +'] .kenedo-listing-form');
+								list = taskInfo.form.closest('.modal').data('parent-intra-listing', newList);
+							});
 						}
 
 						// Hide and clear the modal
@@ -541,7 +545,11 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 					// if we're in a modal, assume form was opened via an intra listing, refresh it
 					list = taskInfo.form.closest('.modal').data('parent-intra-listing');
 					if (list) {
-						kenedo.refreshList(list);
+						kenedo.refreshList(list, function() {
+							let listViewName = list.data('view');
+							let newList = cbj('.kenedo-view[data-view-id=' + listViewName +'] .kenedo-listing-form');
+							list = taskInfo.form.closest('.modal').data('parent-intra-listing', newList);
+						});
 					}
 
 					break;

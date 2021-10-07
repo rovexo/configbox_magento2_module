@@ -19,6 +19,9 @@ define(['cbj', 'configbox/configurator', 'configbox/server'], function(cbj, conf
 				"taxRate": view.data('tax-rate'),
 			};
 
+			// We hide the price box and make it visible again when privateMethods.setMagento2Total() is done
+			cbj('.price-box').css('visibility', 'hidden'); 
+
 			server.injectHtml(view, 'm2configurator', 'getConfiguratorHtml', data, privateMethods.onConfiguratorLoaded);
 
 		}
@@ -28,10 +31,16 @@ define(['cbj', 'configbox/configurator', 'configbox/server'], function(cbj, conf
 	var privateMethods = {
 
 		onConfiguratorLoaded: function() {
+
+			// Updates the M2 price box on selection changes
 			cbj(document).on('cbPricingChange', privateMethods.updateMagento2Total);
-			// Trying to make this event the standard for customizations to listen to when it comes to reacting
-			// config on page loads
+
+			// Sets the m2 price box pricing on load
+			privateMethods.setMagento2Total();
+
+			// This event indicates that the configurator page is ready to go
 			cbj(document).trigger('cbConfiguratorInjected');
+
 			privateMethods.initMagento2Validation();
 			privateMethods.loadVisualization();
 		},
@@ -91,6 +100,21 @@ define(['cbj', 'configbox/configurator', 'configbox/server'], function(cbj, conf
 				);
 
 			});
+
+		},
+
+		/**
+		 * For setting the price in the M2 price box (original price box does not include any CB prices)
+		 */
+		setMagento2Total: function() {
+
+			let cartPositionId = configurator.getCartPositionId();
+			server.makeRequest('m2configurator', 'getPricing', {"cartPositionId": cartPositionId})
+
+				.done(function(pricing) {
+					privateMethods.updateMagento2Total(null, pricing);
+					cbj('.price-box').css('visibility', 'visible');
+				});
 
 		},
 

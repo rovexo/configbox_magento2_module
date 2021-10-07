@@ -180,7 +180,14 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		var btn = cbj(this);
+		let btn = cbj(this);
+
+		let pageId = btn.data('page-id') || configurator.getPageIdFromBtn(btn);
+		let currentPageId = configurator.getPageId();
+
+		if (pageId == currentPageId) {
+			return;
+		}
 
 		if (configurator.getBtnState(btn) == 'processing') {
 			return;
@@ -190,8 +197,8 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 		configurator.queueRequest(function() {
 
-			var pageId = btn.data('page-id') || configurator.getPageIdFromBtn(btn);
-			var currentPageId = configurator.getPageId();
+			let pageId = btn.data('page-id') || configurator.getPageIdFromBtn(btn);
+			let currentPageId = configurator.getPageId();
 
 			let pageSequence = configurator.getConfiguratorData('pageSequence');
 			let navGoesForward = pageSequence.indexOf(pageId) > pageSequence.indexOf(currentPageId);
@@ -200,9 +207,9 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 				configurator.switchPage(pageId);
 
-				if (btn.attr('href')) {
+				if (btn.attr('href') && configurator.getConfiguratorData('changeUrlsOnNav') === true) {
 
-					var state = {
+					let state = {
 						cbPageId: pageId
 					};
 
@@ -214,7 +221,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 			}
 
-			var data = {
+			let data = {
 				cartPositionId: configurator.getCartPositionId(),
 				pageId: configurator.getPageId(),
 			};
@@ -251,9 +258,9 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 						configurator.switchPage(pageId);
 
-						if (btn.attr('href')) {
+						if (btn.attr('href') && configurator.getConfiguratorData('changeUrlsOnNav') === true) {
 
-							var state = {
+							let state = {
 								cbPageId: pageId
 							};
 
