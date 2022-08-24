@@ -10,7 +10,7 @@
     "require": {
         "php": "7.1 - 8.1",
         "magento/framework": "102 - 103",
-        "rovexo/configbox-php": "dev-test-3.4.0"
+        "rovexo/configbox-php": "dev-test-3.4.0 as 1.3.0"
     },
     "extra": {
         "internal-commit-hash": "f89f1859e5ad78d77cad9160f04e1d3d28ae3d30",
