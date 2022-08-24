@@ -1,27 +1,40 @@
 <?php
 $platform = KenedoPlatform::p();
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer Available in M2.3 */
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer Available in M2.3.5 */
 /** @var \Magento\Csp\Api\InlineUtilInterface $csp Available in M2.4 */
 
 $platform->renderStyleSheetLinks();
 
 if (isset($secureRenderer)) {
     foreach ($platform->headScriptDeclarations as $js) {
-        echo $secureRenderer->renderTag('script', ['type' => 'text/javascript'], $js, false);
+        ?>
+        <?= /* @noEscape */ $secureRenderer->renderTag('script', ['type' => 'text/javascript'], $js, false);?>
+        <?php
     }
 
     foreach ($platform->bodyScriptDeclarations as $js) {
-        echo $secureRenderer->renderTag('script', ['type' => 'text/javascript'], $js, false);
+        ?>
+        <?= /* @noEscape */ $secureRenderer->renderTag('script', ['type' => 'text/javascript'], $js, false);?>
+        <?php
     }
 }
 elseif(isset($csp)) {
 
     foreach ($platform->headScriptDeclarations as $js) {
-        echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
+        ?>
+        <?= /* @noEscape */ $csp->renderTag('script', ['type' => 'text/javascript'], $js); ?>
+        <?php
     }
 
     foreach ($platform->bodyScriptDeclarations as $js) {
-        echo $csp->renderTag('script', ['type' => 'text/javascript'], $js);
+        ?>
+        <?= /* @noEscape */ $csp->renderTag('script', ['type' => 'text/javascript'], $js); ?>
+        <?php
     }
 
+}
+else {
+    // Magento 2.3.4 and lower don't have CSP methods
+    KenedoPlatform::p()->renderHeadScriptDeclarations();
+    KenedoPlatform::p()->renderBodyScriptDeclarations();
 }

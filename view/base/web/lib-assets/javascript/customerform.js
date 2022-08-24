@@ -484,19 +484,27 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 			// Loop through all inputs and collect customer data
 			cbj('.kenedo-view.view-customerform :input').each(function(i, item) {
 
+				let name = cbj(item).attr('name');
+				let val;
+
 				if (!cbj(item).attr('name')) {
 					return;
 				}
-				else if (cbj(item).is('input[type=radio]') && cbj(item).prop('checked') === true) {
-					customerData[cbj(item).attr('name')] = cbj(item).val();
+				else if (cbj(item).is('input[type=radio]')) {
+					if (cbj(item).prop('checked') === true) {
+						val = cbj(item).val();
+					}
 				}
 				else if (cbj(item).is('input[type=checkbox]')) {
-					customerData[cbj(item).attr('name')] = (cbj(item).prop('checked') === true) ? '1' : '0';
+					val = (cbj(item).prop('checked') === true) ? '1' : '0';
 				}
 				else {
-					customerData[cbj(item).attr('name')] = cbj(item).val();
+					val = cbj(item).val();
 				}
-				return;
+
+				if (name && val !== undefined) {
+					customerData[name] = val;
+				}
 
 			});
 

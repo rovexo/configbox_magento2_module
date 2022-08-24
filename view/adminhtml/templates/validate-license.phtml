@@ -27,7 +27,7 @@
                         text: $.mage.__('Enter New License'),
                         class: 'action primary new-license',
                         click: function () {
-                            window.location = "<?php echo $block->escapeUrl($block->getLicenseUrl()) ?>";
+                            window.location = "<?= $block->escapeUrl($block->getLicenseUrl()) ?>";
                         }
                     }
                 ]

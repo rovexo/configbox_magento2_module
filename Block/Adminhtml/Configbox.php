@@ -44,8 +44,9 @@ class Configbox extends Template
 			}
 		}
 		if ($ionCubeOk == false) {
+            $url = 'https://www.configbox.at/en/technical-requirements';
 			$msg = 'To run ConfigBox you need to install the PHP extension ionCube Loader (version 10.2 or higher). ';
-			$msg .= 'See <a href="https://www.configbox.at/en/technical-requirements" target="_blank">technical requirements</a> with instructions.';
+			$msg .= 'See <a href="'.$url.'" target="_blank">technical requirements</a> with instructions.';
 			$this->output = $msg;
 			return $this;
 		}
@@ -81,9 +82,7 @@ class Configbox extends Template
                 KenedoObserver::triggerEvent('onBeforeRender', array(&$output));
 
                 // Render the output
-                ob_start();
-                KenedoPlatform::p()->renderOutput($output);
-                $this->output = ob_get_clean();
+                $this->output = KenedoPlatform::p()->getRenderedOutput($output);
 
                 // Restore error handler to give the platform a normal environment
                 KenedoPlatform::p()->restoreErrorHandler();

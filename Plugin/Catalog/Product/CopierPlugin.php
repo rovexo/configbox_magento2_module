@@ -6,8 +6,7 @@ use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Copier;
 use Rovexo\Configbox\Model\MapCbProduct;
 use Rovexo\Configbox\Model\Prepare;
-use Rovexo\Configbox\Plugin\Ui\DataProvider\Product\Form\Modifier\
-                                            CustomOptionsPlugin;
+use Rovexo\Configbox\Plugin\Ui\DataProvider\Product\Form\Modifier\CustomOptionsPlugin;
 
 /**
  * Class CopierPlugin

@@ -12,10 +12,10 @@ $optionId = (int) $block->getOption()->getId();
 
 <input type="text"
        style="display:block;border:none;width:0;height:0;position:absolute;left:-3000px;"
-       id="options_<?php echo (int) $optionId; ?>_text"
-       name="options[<?php echo (int) $optionId;?>]"
+       id="options_<?= (int) $optionId; ?>_text"
+       name="options[<?= (int) $optionId;?>]"
        class="input-text product-custom-option"
-       data-selector="options[<?php echo (int) $optionId; ?>]"
+       data-selector="options[<?= (int) $optionId; ?>]"
        data-validate="{configbox_m2_validation: true}"
        value="dummy value" />
 

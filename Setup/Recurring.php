@@ -51,7 +51,6 @@ class Recurring implements InstallSchemaInterface
         ModuleContextInterface $context
     ) {
         $this->_applyCbUpgrades($setup);
-
     }
 
     /**
@@ -68,7 +67,5 @@ class Recurring implements InstallSchemaInterface
         $kenedo->initKenedo();
         $kenedo->changeDbConnection($connection);
         $kenedo->applyUpdates();
-
     }
-
 }

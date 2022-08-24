@@ -4,12 +4,12 @@
             <thead>
             <tr>
                 <th class="type-configbox">
-                    <?php echo $this->escapeHtml(__(' Select Configbox Product to Associate')); ?>
+                    <?= $block->escapeHtml(__(' Select Configbox Product to Associate')); ?>
                 </th>
             </tr>
             </thead>
             <tr>
-                <td class="opt-configbox"><?php echo $block->getCbProductHtml() ?></td>
+                <td class="opt-configbox"><?= $block->getCbProductHtml() ?></td>
             </tr>
         </table>
     </div>

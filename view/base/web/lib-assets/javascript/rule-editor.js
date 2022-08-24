@@ -526,13 +526,17 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 					return;
 				}
 
-				// Get the value and normalize it to english number notation if it looks like a number
+				// Get the value
 				var inputValue = cbj(this).val();
-				var testValue = inputValue.replace(server.config.decimalSymbol, '.');
-				var possibleNumber = Number(testValue);
-				// Check if that made sense, if so, use the number version
-				if (isNaN(possibleNumber) === false) {
-					inputValue = possibleNumber;
+
+				// Unless it is empty, see if it looks like a number and normalize the decimal symbol to a comma
+				if (inputValue !== '') {
+					var testValue = inputValue.replace(server.config.decimalSymbol, '.');
+					var possibleNumber = Number(testValue);
+					// Check if that made sense, if so, use the number version
+					if (isNaN(possibleNumber) === false) {
+						inputValue = possibleNumber;
+					}
 				}
 
 				returnData[key] = inputValue;

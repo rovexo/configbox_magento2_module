@@ -50,7 +50,6 @@ class Index extends Action
 			$this->_view->loadLayout();
 			$this->_view->renderLayout();
 		}
-		return;
 
     }
 
@@ -95,9 +94,7 @@ class Index extends Action
                 KenedoObserver::triggerEvent('onBeforeRender', array(&$output));
 
                 // Render the output
-                ob_start();
-                KenedoPlatform::p()->renderOutput($output);
-                $output = ob_get_clean();
+                $output = KenedoPlatform::p()->getRenderedOutput($output);
 
                 // Restore error handler to give the platform a normal environment
                 KenedoPlatform::p()->restoreErrorHandler();

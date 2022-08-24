@@ -124,9 +124,10 @@ define(['cbj', 'cbj.bootstrap'], function(cbj) {
 
 		initCartPageEach: function() {
 			cbj('*[data-toggle=popover]').popover({
-				trigger 	: 'hover',
+				trigger 	: 'focus',
 				delay		: 200,
-				html		: true
+				html		: true,
+				customClass	: 'cb-popover'
 			});
 		}
 

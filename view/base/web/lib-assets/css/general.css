@@ -50,8 +50,14 @@
 	background-color:#e0e0e0;
 }
 
+/* Mitigate problem when BS 2 CSS is loaded as well */
 .cb-popover.fade {
-	opacity: 1;
+	opacity: 1!important;
+}
+
+/* Mitigate problem when BS 2 CSS is loaded as well */
+.cb-popover .arrow {
+	border-width: unset!important;
 }
 
 .popover p:first-child {
