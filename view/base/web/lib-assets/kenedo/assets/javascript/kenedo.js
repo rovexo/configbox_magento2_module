@@ -1,21 +1,21 @@
 /**
  * @module kenedo
  */
-define(['cbj', 'configbox/server'], function(cbj, server) {
+define(['cbj', 'configbox/server', 'bootstrap'], function(cbj, server, bootstrap) {
 
 	"use strict";
 
 	/**
 	 * @exports kenedo
 	 */
-	var kenedo = {
+	let kenedo = {
 
 		initAdminPageEach: function(view) {
 
 			// Attach task button listeners to lists
 			view.find('.kenedo-listing-form:not(.default-handlers-attached)').each(function() {
 
-				var list = cbj(this);
+				let list = cbj(this);
 
 				list.find('.trigger-kenedo-list-task').each(function() {
 					cbj(this).on('click', kenedo.onListTaskButtonClicked);
@@ -32,7 +32,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			// Attach task button listeners to detail forms
 			view.find('.kenedo-details-form:not(.default-handlers-attached)').each(function() {
 
-				var form = cbj(this);
+				let form = cbj(this);
 
 				form.find('.trigger-kenedo-form-task').each(function() {
 					cbj(this).on('click', kenedo.onFormTaskButtonClicked);
@@ -85,13 +85,12 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 					return;
 				}
 
-				var url = cbj(this).attr('href');
-				kenedo.loadSubview(url);
+				kenedo.loadSubview(cbj(this).attr('href'));
 
 			});
 
 			cbj(document).on('click', '.task-toggle-help', function() {
-				var btn = cbj(this);
+				const btn = cbj(this);
 				btn.toggleClass('active');
 				btn.closest('.kenedo-details-form').toggleClass('show-help');
 			});
@@ -107,23 +106,23 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			});
 
 			// Language switcher for translatables
-			cbj(document).on('click', '.property-type-translatable .language-switcher', function(){
-				var wrapper = cbj(this).closest('.kenedo-property');
+			cbj(document).on('click', '.property-type-translatable .language-switcher', function(e) {
+				e.preventDefault();
 				cbj(this).siblings().removeClass('active');
 				cbj(this).addClass('active');
 
-				var selector = cbj(this).attr('for');
-				wrapper.find('#translation-' + selector).show().siblings().hide();
-
+				const target = cbj(this).data('target');
+				const wrapper = cbj(this).closest('.kenedo-property');
+				wrapper.find('#translation-' + target).show().siblings().hide();
 			});
 
 			// Trigger event when form content changes
 			cbj(document).on('change','.kenedo-property :input', function(){
 
-				var form = cbj(this).closest('.kenedo-details-form');
-				var propName = cbj(this).closest('.kenedo-property').attr('id').replace('property-name-','');
-				var value = cbj(this).val();
-				var record = form.data('record');
+				let form = cbj(this).closest('.kenedo-details-form');
+				let propName = cbj(this).closest('.kenedo-property').attr('id').replace('property-name-','');
+				let value = cbj(this).val();
+				let record = form.data('record');
 
 				if (typeof(record[propName]) != 'undefined') {
 					record[propName] = value;
@@ -157,7 +156,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 				// Store the empty input field for replacement on cancel (this makes it possible to 'reset'
 				// the file upload input element when clicking cancel and preventing unwanted storage)
-				var inputField = cbj(this).closest('.property-body').find('.file-upload-field').clone();
+				let inputField = cbj(this).closest('.property-body').find('.file-upload-field').clone();
 				cbj(this).data('inputfield',inputField);
 
 				cbj(this).closest('.property-body').find('.file-uploader').slideDown(300);
@@ -174,7 +173,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 				cbj(this).closest('.property-body').find('.file-current-file, .file-delete, .file-upload').slideDown(300);
 
 				// Get the saved empty input field and replace it (See handler above for reference)
-				var inputField = cbj(this).closest('.property-body').find('.show-file-uploader').data('inputfield');
+				let inputField = cbj(this).closest('.property-body').find('.show-file-uploader').data('inputfield');
 				cbj(this).closest('.property-body').find('.file-upload-field').replaceWith(inputField);
 
 			});
@@ -219,11 +218,11 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		},
 
 		onChangeListOrder: function() {
-			var link = cbj(this);
-			var list = link.closest('.kenedo-listing-form');
-			var propertyName = link.data('property-name');
-			var currentDir = link.data('current-direction');
-			var direction = (currentDir === '' || currentDir === 'desc') ? 'asc':'desc';
+			let link = cbj(this);
+			let list = link.closest('.kenedo-listing-form');
+			let propertyName = link.data('property-name');
+			let currentDir = link.data('current-direction');
+			let direction = (currentDir === '' || currentDir === 'desc') ? 'asc':'desc';
 
 			kenedo.setListParameter(list, 'listing_order_property_name', propertyName);
 			kenedo.setListParameter(list, 'listing_order_dir', direction);
@@ -231,22 +230,22 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		},
 
 		onChangeListPage: function() {
-			var link = cbj(this);
-			var list = link.closest('.kenedo-listing-form');
-			var start = parseInt(link.data('start'));
+			let link = cbj(this);
+			let list = link.closest('.kenedo-listing-form');
+			let start = parseInt(link.data('start'));
 			kenedo.setListParameter(list, 'limitstart', start);
 			kenedo.refreshList(list);
 		},
 
 		onChangeListLimit: function() {
-			var select = cbj(this);
-			var list = select.closest('.kenedo-listing-form');
+			let select = cbj(this);
+			let list = select.closest('.kenedo-listing-form');
 			kenedo.setListParameter(list, 'limit', select.val());
 			kenedo.refreshList(list);
 		},
 
 		onChangeListFilters: function() {
-			var list = cbj(this).closest('.kenedo-listing-form');
+			let list = cbj(this).closest('.kenedo-listing-form');
 			kenedo.refreshList(list);
 		},
 
@@ -283,9 +282,9 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 * @returns {*}
 		 */
 		getListParameters: function(list) {
-			var parameters = {};
+			let parameters = {};
 			list.find('.listing-data').each(function() {
-				var key = cbj(this).data('key');
+				let key = cbj(this).data('key');
 				parameters[key] = cbj(this).data('value');
 			});
 			return parameters;
@@ -384,7 +383,6 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		},
 
 		/**
-		 * @typedef {Object} taskInfo
 		 * @property {jQuery} btn
 		 * @property {string} task
 		 * @property {jQuery} form
@@ -435,10 +433,10 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			switch (taskInfo.task) {
 				case 'cancel':
 
-					if (taskInfo.form.closest('.modal').length > 0) {
-						cbrequire(['cbj.bootstrap'], function() {
-							taskInfo.form.closest('.modal').modal('hide').find('.modal-content').html('');
-						});
+					let modal = taskInfo.form.closest('.modal');
+
+					if (modal.length > 0) {
+						bootstrap.Modal.getInstance(modal.get(0)).hide();
 					}
 					else {
 						var returnUrlEncoded = taskInfo.form.find('input[name=return]').val();
@@ -517,7 +515,8 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 						}
 
 						// Hide and clear the modal
-						taskInfo.form.closest('.modal').modal('hide').find('.modal-content').html('');
+						bootstrap.Modal.getInstance(taskInfo.form.closest('.modal').get(0)).hide();
+						taskInfo.form.closest('.modal').find('.modal-content').html('');
 
 					}
 					else {
@@ -553,7 +552,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 					}
 
 					break;
-					
+
 				case 'apply':
 
 					if (data.success === false) {
@@ -565,7 +564,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 						kenedo.setFormParameter(taskInfo.form, 'id', data.data.id);
 					}
 
-					var parent = taskInfo.form.closest('.kenedo-view').parent();
+					let parent = taskInfo.form.closest('.kenedo-view').parent();
 					kenedo.refreshForm(taskInfo.form, function() {
 						taskInfo.form = parent.find('.kenedo-details-form').first();
 						kenedo.showResponseMessages(taskInfo.form, data.errors || [], data.messages || []);
@@ -590,7 +589,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 		showResponseMessages: function(form, errors, notices) {
 
-			var wrapper = form.find('.kenedo-messages').first();
+			const wrapper = form.find('.kenedo-messages').first();
 
 			wrapper.find('.kenedo-messages-error').html('<ul></ul>');
 			wrapper.find('.kenedo-messages-notice').html('<ul></ul>');
@@ -640,10 +639,10 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 */
 		loadSubview: function(parameter, targetSelector, callbackFunction, skipPushState) {
 
-			var selector = (targetSelector) ? targetSelector : '.configbox-ajax-target';
+			const selector = (targetSelector) ? targetSelector : '.configbox-ajax-target';
 
 			// The URL we will load eventually
-			var url;
+			let url;
 
 			// If used as a click handler, get the URL through cbj(this)
 			if (typeof(parameter) == 'object') {
@@ -664,7 +663,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 			// Change the history state and push one in (unless we deal with a load via back button)
 			if (skipPushState === undefined || skipPushState === false) {
-				var state = {
+				const state = {
 					isSubview: true,
 					url : url,
 					targetSelector: selector
@@ -700,7 +699,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 					if (jqXHR.status !== 200) {
 
-						var text = '<div id="view-error" class="kenedo-view">';
+						let text = '<div id="view-error" class="kenedo-view">';
 						text += '<div class="kenedo-listing-form">';
 						text += '<p>Encountered a system error: HTTP code is ' + jqXHR.status + '. Text message is: ' + jqXHR.statusText + '</p>';
 						text += '</div>';
@@ -773,7 +772,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 			if (this.addedStylesheets.indexOf(url.toLowerCase()) === -1) {
 				this.addedStylesheets.push(url.toLowerCase());
-				var link = '<link rel="stylesheet" type="text/css" href="' + url + '">';
+				const link = '<link rel="stylesheet" type="text/css" href="' + url + '">';
 				cbj('head').append(link);
 			}
 
@@ -812,26 +811,27 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			modal.data('parent-form', form);
 			modal.data('parent-intra-listing', list);
 
-			cbrequire(['cbj', 'cbj.bootstrap'], function(cbj) {
+			var data = {
+				id: id
+			};
 
-				var data = {
-					id: id
-				};
+			if (prefillPropName) {
+				data['prefill_' + prefillPropName] = prefillValue;
+			}
 
-				if (prefillPropName) {
-					data['prefill_' + prefillPropName] = prefillValue;
-				}
+			server.injectHtml(
+				modal.find('.modal-content').first(),
+				controller,
+				task,
+				data,
+				function() {
 
-				server.injectHtml(
-					modal.find('.modal-content'),
-					controller,
-					task,
-					data,
-					function() {
-						modal.modal({keyboard: false, backdrop: 'static'});
-					});
+					new bootstrap.Modal(modal.get(0), {
+						keyboard: false,
+						backdrop: 'static'
+					}).show();
 
-			});
+				});
 
 		},
 
@@ -906,7 +906,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 						continue;
 					}
 
-					// Start with assuming that we gonna show the property (later on we might find reasons not to)
+					// Start with assuming that we will show the property (later on we might find reasons not to)
 					showProperty = true;
 
 					// In case we deal with an invisible field, leave it be (invisible-field comes from propDef 'invisible')
@@ -942,7 +942,6 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 										// An exclamation mark in the beginning of the shouldValue means 'is not'
 										if (typeof(shouldValues[i]) == 'string' && shouldValues[i].substr(0, 1) === '!') {
-											shouldValues[i] = shouldValues[i].substr(1);
 											operator = 'is not';
 										}
 
@@ -965,15 +964,17 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 										}
 										else {
 
+											let withoutExcl = shouldValues[i].substr(1);
+
 											// Asterisk as shouldValue means that any non-empty value is good
-											if (shouldValues[i] === '*') {
+											if (withoutExcl === '*') {
 												if (!currentValue || currentValue == '0') {
 													foundMatch = true;
 													break;
 												}
 											}
 
-											if (shouldValues[i] != currentValue) {
+											if (withoutExcl != currentValue) {
 												// If we got one, make a mark
 												foundMatch = true;
 												break;
@@ -1055,7 +1056,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 								if (property.hasClass('property-type-translatable')) {
 									property.find('.form-control').val(nullValue).change();
 								}
-								
+
 							}
 
 							settings[propertyName] = nullValue;
@@ -1155,7 +1156,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 					var data = {
 						'ids': kenedo.getCheckedListItemIds(taskInfo.list).join(',')
 					};
-					
+
 					server.makeRequest(deleteController, taskInfo.task, data)
 						.then(function(data, textStatus, jqXhr) {
 							/**
@@ -1211,7 +1212,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 		/**
 		 * Registers a function to be executed when a certain subview is loaded via kenedo.loadSubview().
-		 * This is a similar concept to document.ready, but these functions are fired when kenedo.loadSubview()
+		 * This is a similar concept to 'document.ready', but these functions are fired when kenedo.loadSubview()
 		 * injects the sub view of that name into the document.
 		 * @param {String} viewId Content of the ID HTML attribute of the subview's wrapping div
 		 * @param {Function} fn Ready function
@@ -1245,7 +1246,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		},
 
 		toggleCheckboxes: function() {
-			var checked = cbj(".kenedo-listing .kenedo-check-all-items").prop('checked');
+			var checked = cbj(this).prop('checked');
 			cbj(this).closest('.kenedo-listing').find('.kenedo-item-checkbox').prop('checked',checked);
 		}
 

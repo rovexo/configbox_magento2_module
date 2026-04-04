@@ -126,6 +126,7 @@
 .view-customerform .customer-form-sections .form-control {
 	margin-bottom:5px;
 	outline:none;
+	border-radius:0;
 }
 
 .view-customerform .account-exists-section {
@@ -139,7 +140,7 @@
 .view-customerform .validation-tooltip {
 	display: block;
 	position: absolute;
-	top: 7px;
+	top: calc(50% - 8px);
 	right: 8px;
 	width: 18px;
 	visibility: hidden;
@@ -234,4 +235,9 @@
 
 .view-customerform .recurring-customer-login .feedback:empty {
 	display:none;
+}
+
+.cb-content.validation-tooltip .popover-body {
+	padding-top:5px;
+	padding-bottom:5px;
 }

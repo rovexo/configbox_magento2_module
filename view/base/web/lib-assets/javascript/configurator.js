@@ -3,7 +3,7 @@
 /**
  * @module configbox/configurator
  */
-define(['cbj', 'configbox/server'], function(cbj, server) {
+define(['cbj', 'configbox/server', 'cbj.bootstrap'], function(cbj, server) {
 
 	"use strict";
 
@@ -93,6 +93,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		this.initImagePreloading();
 		this.initStickyBlock();
 		this.initBsPopovers();
+		this.initBsModals();
 	};
 
 	configurator.onAddToCart = function(event) {
@@ -101,9 +102,9 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		var btn = cbj(this);
+		let btn = cbj(this);
 
-		if (configurator.getBtnState(btn) == 'processing') {
+		if (configurator.getBtnState(btn) === 'processing') {
 			return;
 		}
 
@@ -121,29 +122,13 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 					if (missingSelections.length !== 0) {
 
-						configurator.switchPage(missingSelections[0].pageId, function() {
+						configurator.noScroll = true;
 
+						configurator.switchPage(missingSelections[0].pageId, function() {
+							delete configurator.noScroll;
 							configurator.addValidationErrors(missingSelections);
 							configurator.setBtnState(btn, 'normal');
-
-							try {
-
-								let firstQuestionTop = cbj('#question-' + missingSelections[0].id).offset().top;
-								let viewPortTop = cbj(document).scrollTop();
-								let viewPortHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-								let viewPortBottom = viewPortTop + viewPortHeight;
-
-								if (firstQuestionTop < viewPortTop || firstQuestionTop > viewPortBottom) {
-									let pos = Math.max(0, firstQuestionTop - 100 - (window.stickyHeaderHeight || 0));
-									cbj('html, body').animate({scrollTop: pos}, 200);
-								}
-
-							}
-							catch(e) {
-								console.warn('Scrolling to question failed');
-								console.error(e);
-							}
-
+							configurator.scrollToIfNeeded('#question-' + missingSelections[0].id);
 						});
 
 						configurator.setBtnState(btn, 'normal');
@@ -203,8 +188,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			let pageSequence = configurator.getConfiguratorData('pageSequence');
 			let navGoesForward = pageSequence.indexOf(pageId) > pageSequence.indexOf(currentPageId);
 
-			if (navGoesForward == false || configurator.getConfiguratorData('blockNavigationOnMissing') == false) {
-
+			if (!navGoesForward || configurator.getConfiguratorData('blockNavigationOnMissing') == false) {
 				configurator.switchPage(pageId);
 
 				if (btn.attr('href') && configurator.getConfiguratorData('changeUrlsOnNav') === true) {
@@ -231,50 +215,56 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 				.done(function(missingSelections) {
 
 					if (missingSelections.length !== 0) {
-
 						configurator.addValidationErrors(missingSelections);
 						configurator.setBtnState(btn, 'normal');
-
-						try {
-
-							let firstQuestionTop = cbj('#question-' + missingSelections[0].id).offset().top;
-							let viewPortTop = cbj(document).scrollTop();
-							let viewPortHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-							let viewPortBottom = viewPortTop + viewPortHeight;
-
-							if (firstQuestionTop < viewPortTop || firstQuestionTop > viewPortBottom) {
-								let pos = Math.max(0, firstQuestionTop - 100 - (window.stickyHeaderHeight || 0));
-								cbj('html, body').animate({scrollTop: pos}, 200);
-							}
-
-						}
-						catch(e) {
-							console.warn('Scrolling to question failed');
-							console.error(e);
-						}
-
+						configurator.scrollToIfNeeded('#question-' + missingSelections[0].id);
 					}
 					else {
-
 						configurator.switchPage(pageId);
-
 						if (btn.attr('href') && configurator.getConfiguratorData('changeUrlsOnNav') === true) {
-
 							let state = {
 								cbPageId: pageId
 							};
-
 							window.history.pushState(state, '', btn.attr('href'));
-
 						}
-
 					}
-
 				});
-
 		});
 
 	};
+
+	/**
+	 * Scrolls to an element if its top is not currently visible in the viewport.
+	 *
+	 * @param {string} selector - Selector to the desired element.
+	 * @returns {void}
+	 */
+	configurator.scrollToIfNeeded = function(selector) {
+
+		const element = document.querySelector(selector);
+
+		if (!element) {
+			return;
+		}
+
+		const rect = element.getBoundingClientRect();
+		const headerHeight = window.stickyHeaderHeight ?? 0;
+		const padding = 20;
+
+		// Check if element's top is visible in viewport
+		const isTopVisible = rect.top >= headerHeight && rect.top <= window.innerHeight;
+
+		if (!isTopVisible) {
+			const elementTop = window.scrollY + rect.top;
+			const scrollPosition = elementTop - headerHeight - padding;
+
+			window.scrollTo({
+				top: scrollPosition,
+				behavior: 'smooth'
+			});
+		}
+
+	}
 
 
 	/**
@@ -376,17 +366,11 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 */
 	configurator.switchPage = function(pageId, callback) {
 
-		// Run the callback if we're on the right page already
-		if (pageId == configurator.getPageId()) {
-			if (typeof(callback) == 'function') {
-				callback();
-			}
-			return;
-		}
-
 		if (cbj('.configurator-page-wrapper').length === 0) {
 			cbj('.kenedo-view.view-configuratorpage').wrap('<div class="configurator-page-wrapper"></div>');
 		}
+
+		cbj(document).trigger('cbPageSwitchStart', [pageId]);
 
 		server.injectHtml(
 			'.configurator-page-wrapper',
@@ -394,29 +378,20 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			'getPageHtml',
 			{pageId: pageId},
 			function() {
-				
-				var offsetView = cbj('.kenedo-view.view-configuratorpage').offset().top;
-				var scrollTop = cbj(window).scrollTop();
-
-				var stickyHeaderHeight;
-				if (typeof(window.stickyHeaderHeight) === 'undefined') {
-					stickyHeaderHeight = 50;
-				}
-				else {
-					stickyHeaderHeight = window.stickyHeaderHeight;
+				cbj(document).trigger('cbPageSwitchEnd', [pageId]);
+				if (!configurator.noScroll) {
+					configurator.scrollToIfNeeded('.kenedo-view.view-configuratorpage');
 				}
 
-				var scrollPosition = offsetView - stickyHeaderHeight;
-
-				if (scrollPosition < scrollTop) {
-					cbj('html, body').animate({
-						scrollTop: scrollPosition
-					}, 500);
-				}
-				
-				if (typeof(callback) == 'function') {
-					callback();
-				}
+				let interval = window.setInterval(function() {
+					let view = cbj('.kenedo-view.view-configuratorpage');
+					if (view.hasClass('view-processed')) {
+						window.clearInterval(interval);
+						if (typeof(callback) == 'function') {
+							callback();
+						}
+					}
+				}, 10);
 
 			});
 
@@ -528,7 +503,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	/**
 	 * @deprecated Use registerQuestionType instead
 	 * @param {string} type
-	 * @param {string} question
+	 * @param {string} questionObject
 	 */
 	configurator.registerQuestion = function(type, questionObject) {
 		configurator.registerQuestionType(type, questionObject);
@@ -654,52 +629,134 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 	};
 
+	configurator.initBsModals = function() {
+		let modalTriggers = cbj('*[data-toggle="modal"], *[data-bs-toggle="modal"]');
+		if (modalTriggers.length > 0) {
+			cbrequire(['cbj', 'bootstrap']);
+		}
+
+	};
+
 	/**
 	 * This inits Bootstrap pop-overs.
 	 */
 	configurator.initBsPopovers = function() {
+		if (cbj('.cb-popover').length === 0) {
+			return;
+		}
 
-		// See if there are any .cb-popovers..
-		if (cbj('.cb-popover').length > 0) {
+		cbj(document).on('hidden.bs.modal', function () {
+			cbj('.modal-backdrop').blur().remove();
+		});
 
-			// If so load jquery and bootstrap..
-			cbrequire(['cbj', 'cbj.bootstrap'], function(cbj) {
+		cbrequire(['cbj', 'cbj.bootstrap'], function(cbj) {
 
-				cbj('.cb-popover').each(function() {
+			cbj('.cb-popover').each(function () {
 
-					// Normalize placement (BS 4 no longer accepts multiple placement strings)
-					var placement = cbj(this).data('placement');
-					if (typeof(placement) === 'string' && placement.indexOf(' ') !== -1) {
-						var parts = placement.split(' ');
-						placement = parts[parts.length - 1];
-						cbj(this).attr('data-placement', placement);
-						cbj(this).data('placement', placement);
+				const customPopover = cbj(this);
+
+				let customClass = cbj(this).data('customClass');
+				if (typeof(customClass) !== 'undefined') {
+					customClass += ' cb-popover-actual';
+					cbj(this).data('customClass', customClass);
+				}
+				else {
+					cbj(this).data('customClass', 'cb-popover-actual');
+				}
+
+				if (customPopover.data('trigger') === 'hover') {
+
+					customPopover.popover({
+						html: true,
+						trigger: 'manual',
+						sanitize: true,
+						container: 'body',
+						boundary: 'window',
+						animation: false,
+						delay: {show: 100, hide: 100}
+					}).on('mouseenter', function () {
+						const self = this;
+						cbj(self).popover('show');
+						cbj('.popover').off('.hoverfix')
+							.on('mouseenter.hoverfix', () => clearTimeout(cbj(self).data('hideTimer')))
+							.on('mouseleave.hoverfix', () => cbj(self).popover('hide'));
+					}).on('mouseleave', function () {
+						const self = this;
+						const t = setTimeout(() => {
+							if (!cbj('.popover:hover').length) cbj(self).popover('hide');
+						}, 120);
+						cbj(self).data('hideTimer', t);
+					})
+
+				}
+				else {
+					customPopover.popover({
+						html: true,
+						sanitize: true,
+						container: 'body',
+						boundary: 'window',
+						animation: false,
+						delay: {show: 100, hide: 100}
+					});
+				}
+
+				customPopover.get(0).addEventListener('shown.bs.popover', function() {
+					const $t = cbj(this);
+					let content = $t.data('content');
+					let isHtml = false;
+					try {
+						const tpl = document.createElement("template");
+						tpl.innerHTML = content.trim();
+						isHtml = (tpl.content.children.length > 0);
+					}
+					catch {
+
+					}
+					if (!isHtml) {
+						cbj('.cb-popover-actual').css('visibility', 'visible');
+						return;
 					}
 
-					var customClass = cbj(this).data('customClass');
-					if (typeof(customClass) !== 'undefined') {
-						customClass += ' cb-popover';
-						cbj(this).data('customClass', customClass);
-					}
-					else {
-						cbj(this).data('customClass', 'cb-popover');
+					const $pop = cbj($t.data('content'));
+
+					if ($pop.find('img').length === 0) {
+						cbj('.cb-popover-actual').css('visibility', 'visible');
+						return;
 					}
 
+					$pop.find('img').one('load', function () {
+						const inst = $t.data('bs.popover');
+						if (inst && inst._popper && inst._popper.forceUpdate) {
+							inst._popper.forceUpdate();
+							cbj('.cb-popover-actual').css('visibility', 'visible');
+						}
+					}).each(function () {
+						if (this.complete) cbj(this).trigger('load');
+					});
 				});
 
-				cbj('.cb-popover').popover();
+				customPopover.on('shown.bs.popover', function () {
+					const $t = cbj(this);
+					const $pop = cbj($t.data('content'));
 
+					if ($pop.find('img').length === 0) {
+						cbj('.cb-popover-actual').css('visibility', 'visible');
+						return;
+					}
 
-
-				// This will help closing the popovers apparently
-				cbj(document).on('focus', function(){
-					cbj('.cb-popover').popover('hide');
+					$pop.find('img').one('load', function () {
+						const inst = $t.data('bs.popover');
+						if (inst && inst._popper && inst._popper.scheduleUpdate) {
+							inst._popper.scheduleUpdate();
+							cbj('.cb-popover-actual').css('visibility', 'visible');
+						}
+					}).each(function () {
+						if (this.complete) cbj(this).trigger('load');
+					});
 				});
 
 			});
-
-		}
-
+		});
 	};
 
 	configurator.initSelectionImageSwitcher = function() {
@@ -719,12 +776,13 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			return;
 		}
 
-		var floater   		= cbj('.sticky-block');
-		var floaterOffset	= floater.offset();
-		var floaterHeight 	= floater.height();
-		var highestCol		= 0;
-		var topPadding		= 20;
-		var colsHaveCollapsed = false;
+		configurator.floater = cbj('.sticky-block');
+
+		let floaterOffset	= configurator.floater.offset();
+		let floaterHeight 	= configurator.floater.height();
+		let highestCol		= 0;
+		let topPadding		= 20;
+		let colsHaveCollapsed = false;
 
 		if (configurator.stickyBlockHandlersAttached === true) {
 			return;
@@ -734,20 +792,19 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 
 		// This checks regularly if the columns have collapsed and which is the higher one
 		window.setInterval(function(){
-			floaterHeight = floater.height();
-			floaterOffset = floater.offset();
 
-			var lastTopOffset = null;
+			floaterHeight = configurator.floater.height();
+			floaterOffset = configurator.floater.offset();
 
-			floater.closest('.row').children().each(function(){
+			let lastTopOffset = null;
 
+			configurator.floater.closest('.row').children().each(function(){
 
 				if (lastTopOffset !== null && lastTopOffset !== cbj(this).offset().top) {
 					colsHaveCollapsed = true;
 				}
 
 				lastTopOffset = cbj(this).offset().top;
-
 
 				if (cbj(this).innerHeight() > highestCol) {
 					if (cbj(this).find('.overviews').length) {
@@ -762,33 +819,28 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		// This applies padding to the sticky block so it stays in sight
 		cbj(window).scroll(function() {
 
-			if (floater.length === 0) {
+			if (configurator.floater.length === 0) {
 				return;
 			}
 
 			if (colsHaveCollapsed === true) {
-				floater.css('padding-top', 0);
+				configurator.floater.css('padding-top', 0);
 				return;
 			}
 
-			var windowTop = cbj(window).scrollTop();
+			let windowTop = cbj(window).scrollTop();
 
 			if (windowTop + topPadding  > floaterOffset.top) {
-				var delta = windowTop - floaterOffset.top + topPadding;
+				let delta = windowTop - floaterOffset.top + topPadding;
 				if (delta + floaterHeight < highestCol - topPadding) {
-					floater.css('padding-top', delta);
-				}
-
-				if (floater.closest('.row').width() === floater.width()) {
-					floater.css('padding-top', 0);
+					configurator.floater.css('padding-top', delta);
 				}
 
 			} else {
-				floater.css('padding-top', 0);
+				configurator.floater.css('padding-top', 0);
 			}
 
 		});
-
 
 	};
 
@@ -1054,7 +1106,9 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 * @property {Number} questionId
 		 * @property {String} text
 		 */
-		configurator.getQuestionDiv(questionId).trigger('cbValidationMessageShown', [questionId, text]);
+		window.setTimeout(function() { // A bit of timeout to make sure the question handlers are actually attached
+			configurator.getQuestionDiv(questionId).trigger('cbValidationMessageShown', [questionId, text]);
+		}, 200);
 	};
 
 	/**
@@ -1101,6 +1155,8 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		question.data('selection', selection);
 		question.data('outputValue', outputValue);
 
+		let triggerElement = (question.length > 0) ? question : cbj(document);
+
 		if (selectedBy === 'system') {
 
 			/**
@@ -1109,7 +1165,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 			 * @property {string} selection - The machine-readable selection
 			 * @property {string} outputValue - The human-readable selection
 			 */
-			question.trigger('cbSystemSelectionChange', [questionId, selection, outputValue]);
+			triggerElement.trigger('cbSystemSelectionChange', [questionId, selection, outputValue]);
 
 		}
 
@@ -1119,7 +1175,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 * @property {string} selection - The machine-readable selection
 		 * @property {string} outputValue - The human-readable selection
 		 */
-		question.trigger('cbSelectionChange', [questionId, selection, outputValue]);
+		triggerElement.trigger('cbSelectionChange', [questionId, selection, outputValue]);
 
 	};
 
@@ -1306,7 +1362,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 * @returns {int} Cart position ID
 	 */
 	configurator.getCartPositionId = function() {
-		return parseInt(cbj('.kenedo-view.view-configuratorpage').data('cart-position-id'));
+		return parseInt(configurator.getConfiguratorData('cartPositionId'));
 	};
 
 	/**
@@ -1314,7 +1370,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 * @returns {Number} CB product ID
 	 */
 	configurator.getProductId = function() {
-		return parseInt(cbj('.kenedo-view.view-configuratorpage').data('product-id'));
+		return parseInt(configurator.getConfiguratorData('productId'));
 	};
 
 	/**
@@ -1322,7 +1378,7 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 	 * @returns {Number} CB page ID
 	 */
 	configurator.getPageId = function() {
-		return parseInt(cbj('.kenedo-view.view-configuratorpage').data('page-id'));
+		return parseInt(configurator.getConfiguratorData('pageId'));
 	};
 
 	/**
@@ -1595,11 +1651,9 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		 */
 		updateVisualization: function(event, questionId, selection) {
 
-			// Removal
 			if (!selection) {
 				configurator.blockVisualization.removeImage(questionId);
 			}
-			// Change
 			else {
 				configurator.blockVisualization.changeImage(questionId, selection);
 			}
@@ -1607,43 +1661,13 @@ define(['cbj', 'configbox/server'], function(cbj, server) {
 		},
 
 		removeImage: function(questionId) {
-
-			// Remove either the answer or all images of the question
 			cbj('.image-question-id-' + questionId).fadeOut(200);
-
 		},
 
 		changeImage: function(questionId, selection) {
-
-			// Cheap trick to see if we're dealing with a predefined-answers question
-			if (parseInt(selection) != selection) {
-				return;
-			}
-
 			selection = parseInt(selection);
-
-			if (selection !== 0) {
-				// If there is no image for the answer, do fade out of the others now
-				// (for the case the answer has no image but others do)
-				if (cbj('.image-answer-id-' + selection).length === 0) {
-					cbj('.image-question-id-' + questionId + ':not(.image-answer-id-'+ selection +')').fadeOut(200);
-				}
-				// Fade in the wanted image and fade out the others
-				else {
-
-					cbj('.image-answer-id-' + selection).fadeIn(200, 'linear');
-
-					var otherImages = cbj('.image-question-id-' + questionId + ':not(.image-answer-id-'+ selection +')');
-					if (otherImages.length) {
-						otherImages.fadeOut(200, 'linear');
-					}
-
-				}
-			}
-			else {
-				cbj('.image-answer-id-' + selection).fadeOut(200);
-			}
-
+			cbj('.image-answer-id-' + selection).show();
+			cbj('.image-question-id-' + questionId + ':not(.image-answer-id-'+ selection +')').hide();
 		}
 
 	};

@@ -10,7 +10,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 	/**
 	 * @exports configbox/checkout
 	 */
-	var module = {
+	let module = {
 
 		/**
 		 * Initializes the checkout page functionality.
@@ -30,7 +30,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 		 *    See PHP: ObserverGoogleAnalytics class, that is where server-side tracking happens
 		 *
 		 * There is event data passed along (when you use jQuery's on method, you get them in the second parameter of
-		 * your callback function. Best console.log them to see each key/value.
+		 * your callback function). Best console.log them to see each key/value.
 		 *
 		 * Event data:
 		 *
@@ -45,12 +45,12 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 		 *   console.log(eventData);
 		 * });
 		 *
-		 * Getting order meta data yourself at any time:
+		 * Getting order data yourself at any time:
 		 *
 		 * Use this module's method getOrderMetaData() to get order information (e.g. when you want to track the start
 		 * of checkout and send order data).
 		 *
-		 * Getting customer meta data:
+		 * Getting customer data:
 		 *
 		 * Use module configbox/customerform, method getCustomerFormData() to get billing/shipping address at any time
 		 * in the checkout process. Use cbrequire() instead of require to get ConfigBox AMD modules.
@@ -76,7 +76,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 				cbrequire(['configbox/customerform'], function(customerform) {
 
 					// Get the customer data from the customer form
-					var customerData = customerform.getCustomerFormData();
+					let customerData = customerform.getCustomerFormData();
 
 					server.storeOrderAddress(customerData)
 
@@ -112,7 +112,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 							// (callback because the taxes can change in the order record data)
 							module.refreshOrderRecord(function() {
 
-								var eventData = {
+								let eventData = {
 									customerData: customerData,
 									orderData: module.getOrderMetaData()
 								};
@@ -131,7 +131,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 			cbj(document).on('change', '#subview-delivery .option-control', function() {
 
 				cbj(this).closest('li').addClass('processing');
-				var id = cbj(this).val();
+				let id = cbj(this).val();
 
 				server.setDeliveryOption(id)
 					.done(function() {
@@ -155,7 +155,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 			cbj(document).on('change', '#subview-payment .option-control', function() {
 
 				cbj(this).closest('li').addClass('processing');
-				var id = cbj(this).val();
+				let id = cbj(this).val();
 
 				server.setPaymentOption(id)
 					.done(function() {
@@ -175,20 +175,27 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 			});
 
 			cbj(document).on('click', '.trigger-show-terms', function() {
-				cbrequire(['cbj.bootstrap'], function() {
-					cbj('#modal-terms').modal();
+				cbrequire(['bootstrap'], function(bootstrap) {
+					new bootstrap.Modal(cbj('#modal-terms').get(0)).show();
 				});
 			});
 
 			cbj(document).on('click', '.trigger-show-refund-policy', function() {
-				cbrequire(['cbj.bootstrap'], function() {
-					cbj('#modal-refund-policy').modal();
+				cbrequire(['bootstrap'], function(bootstrap) {
+					new bootstrap.Modal(cbj('#modal-refund-policy').get(0)).show();
+				});
+			});
+
+			cbj('.modal-content>button.close').click(function() {
+				let modal = cbj(this).closest('.modal').get(0);
+				cbrequire(['bootstrap'], function(bootstrap) {
+					bootstrap.Modal.getInstance(modal).hide();
 				});
 			});
 
 			cbj(document).on('click', '.trigger-place-order', function() {
 
-				var button = cbj(this);
+				let button = cbj(this);
 
 				// Don't process if clicked already
 				if (button.hasClass('processing') === true) {
@@ -197,29 +204,29 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 				// Add the css class flag
 				button.addClass('processing');
 
-				var termsAgreementMissing = false;
-				var refundsAgreementMissing = false;
+				let termsAgreementMissing = false;
+				let refundsAgreementMissing = false;
 
-				var agreeTermsRequired = cbj(this).closest('.view-checkout').data('agree-to-terms');
-				var agreeRpRequired = cbj(this).closest('.view-checkout').data('agree-to-rp');
-				var textAgreeToTerms = cbj(this).closest('.view-checkout').data('text-agree-terms');
-				var textAgreeToRp = cbj(this).closest('.view-checkout').data('text-agree-rp');
-				var textAgreeToBoth = cbj(this).closest('.view-checkout').data('text-agree-both');
+				let agreeTermsRequired = cbj(this).closest('.view-checkout').data('agree-to-terms');
+				let agreeRpRequired = cbj(this).closest('.view-checkout').data('agree-to-rp');
+				let textAgreeToTerms = cbj(this).closest('.view-checkout').data('text-agree-terms');
+				let textAgreeToRp = cbj(this).closest('.view-checkout').data('text-agree-rp');
+				let textAgreeToBoth = cbj(this).closest('.view-checkout').data('text-agree-both');
 
 				if (agreeTermsRequired) {
-					var agreed = cbj('#agreement-terms').prop('checked');
+					let agreed = cbj('#agreement-terms').prop('checked');
 					if (agreed === false) {
 						termsAgreementMissing = true;
 					}
 				}
 				if (agreeRpRequired) {
-					var agreedRp = cbj('#agreement-refund-policy').prop('checked');
+					let agreedRp = cbj('#agreement-refund-policy').prop('checked');
 					if (agreedRp === false) {
 						refundsAgreementMissing = true;
 					}
 				}
 
-				var agreementsMissingMessage = '';
+				let agreementsMissingMessage = '';
 
 				// If both terms and refund policy missing
 				if (termsAgreementMissing && refundsAgreementMissing) {
@@ -255,7 +262,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 							}
 
 							// Prepare  data for the tracking event
-							var eventData = {
+							let eventData = {
 								customerData: customerForm.getCustomerFormData(),
 								orderData: module.getOrderMetaData()
 							};
@@ -264,7 +271,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 							cbj(document).trigger('cb.checkout.order_placed', eventData);
 
 							// Then load the PSP bridge and get going with the payment
-							var url = button.closest('.view-checkout').data('url-psp-view');
+							let url = button.closest('.view-checkout').data('url-psp-view');
 							cbj('.wrapper-psp-bridge').load(url, function(){
 								cbj('.trigger-redirect-to-psp').trigger('click');
 							});
@@ -290,7 +297,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 
 		refreshOrderAddress : function(callback) {
 
-			var url = cbj('.kenedo-view.view-checkout').data('url-address-view');
+			let url = cbj('.kenedo-view.view-checkout').data('url-address-view');
 
 			// Refresh the order address display and toggle
 			cbj('.wrapper-order-address .order-address-display').load(url, function() {
@@ -304,7 +311,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 
 		refreshCartSummary: function(callback) {
 
-			var url = cbj('.kenedo-view.view-cart').data('url-cart-summary');
+			let url = cbj('.kenedo-view.view-cart').data('url-cart-summary');
 
 			if (url) {
 
@@ -312,10 +319,18 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 
 					cbj('.button-copy-product, .button-edit-product, .button-remove-product, .trigger-edit-quantity, .trigger-remove-position').hide();
 
-					cbj('*[data-toggle=popover]').popover({
-						trigger 	: 'hover',
+					const options = {
+						trigger 	: 'focus',
 						delay		: 200,
-						html		: true
+						html		: true,
+						customClass	: 'cb-popover'
+					};
+					const popoverTriggerList = document.querySelectorAll('*[data-toggle=popover]');
+					popoverTriggerList.forEach(function(trigger) {
+						if (!trigger.dataset.bsContent) {
+							options.content = trigger.dataset.content;
+						}
+						new bootstrap.Popover(trigger, options);
 					});
 
 					if (callback) {
@@ -328,7 +343,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 
 		refreshDeliveryOptions : function(callback) {
 
-			var url = cbj('.kenedo-view.view-checkout').data('url-delivery-view');
+			let url = cbj('.kenedo-view.view-checkout').data('url-delivery-view');
 
 			cbj('.wrapper-delivery-options').load(url, {}, function() {
 				cbj(document).trigger('cbViewInjected');
@@ -340,7 +355,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 
 		refreshPaymentOptions : function(callback) {
 
-			var url = cbj('.kenedo-view.view-checkout').data('url-payment-view');
+			let url = cbj('.kenedo-view.view-checkout').data('url-payment-view');
 
 			cbj('.wrapper-payment-options').load(url, {}, function() {
 				cbj(document).trigger('cbViewInjected');
@@ -352,7 +367,7 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 
 		refreshOrderRecord : function(callback) {
 
-			var url = cbj('.kenedo-view.view-checkout').data('url-order-view');
+			let url = cbj('.kenedo-view.view-checkout').data('url-order-view');
 			cbj('.wrapper-order-record').load(url, {}, function() {
 				cbj(document).trigger('cbViewInjected');
 				if (callback) {
@@ -362,13 +377,13 @@ define(['cbj', 'configbox/server', 'configbox/ga'], function(cbj, server, gaModu
 		},
 
 		/**
-		 * Returns meta data about the order and positions. Intended for use in tracking code. See
+		 * Returns metadata about the order and positions. Intended for use in tracking code. See
 		 * ConfigboxViewRecord::$orderMetaData
 		 * @returns {object}
 		 */
 		getOrderMetaData: function() {
 
-			var tag = cbj('.kenedo-view.view-record #order-meta-data');
+			let tag = cbj('.kenedo-view.view-record #order-meta-data');
 
 			// Let it be in case there is none
 			if (tag.length === 0) {

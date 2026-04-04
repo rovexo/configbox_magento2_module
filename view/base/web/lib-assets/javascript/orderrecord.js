@@ -16,8 +16,9 @@ define(['cbj'], function(cbj) {
 
 				var positionId = cbj(this).data('position-id');
 
-				cbrequire(['cbj.bootstrap'], function() {
-					cbj('.position-id-' + positionId).modal();
+				cbrequire(['bootstrap'], function(bootstrap) {
+					const modalEl = cbj('.position-id-' + positionId).get(0);
+					new bootstrap.Modal(modalEl).show();
 				});
 
 			});

@@ -4,19 +4,20 @@
 /**
  * @module configbox/cart
  */
-define(['cbj', 'cbj.bootstrap'], function(cbj) {
+define(['cbj', 'bootstrap'], function(cbj, bootstrap) {
 
 	"use strict";
 
+	// noinspection UnnecessaryLocalVariableJS
 	/**
 	 * @exports configbox/cart
 	 */
-	var module = {
+	let module = {
 
 		initCartPage: function() {
 
 			cbj(document).on('click', '.view-cart .trigger-edit-quantity', function() {
-				var row = cbj(this).closest('.position-row');
+				const row = cbj(this).closest('.position-row');
 				row.find('.trigger-edit-quantity').hide();
 				row.find('.trigger-remove-position').hide();
 				row.find('.position-quantity').hide();
@@ -25,7 +26,7 @@ define(['cbj', 'cbj.bootstrap'], function(cbj) {
 			});
 
 			cbj(document).on('click', '.view-cart .trigger-cancel-quantity-edit', function() {
-				var row = cbj(this).closest('.position-row');
+				const row = cbj(this).closest('.position-row');
 				row.find('.trigger-edit-quantity').show();
 				row.find('.trigger-remove-position').show();
 				row.find('.position-quantity').show();
@@ -40,11 +41,11 @@ define(['cbj', 'cbj.bootstrap'], function(cbj) {
 
 			cbj(document).on('click', '.view-cart .trigger-store-quantity', function() {
 
-				var btn = cbj(this);
+				let btn = cbj(this);
 
-				var row = btn.closest('.position-row');
-				var qtyNew = row.find('.quantity-edit-box').val();
-				var positionId = row.data('position-id');
+				let row = btn.closest('.position-row');
+				let qtyNew = row.find('.quantity-edit-box').val();
+				let positionId = row.data('position-id');
 
 				cbrequire(['configbox/server'], function(server) {
 
@@ -58,7 +59,7 @@ define(['cbj', 'cbj.bootstrap'], function(cbj) {
 							}
 
 							// Reload the summary to get the right prices
-							var urlSummary = btn.closest('.view-cart').data('url-cart-summary');
+							let urlSummary = btn.closest('.view-cart').data('url-cart-summary');
 
 							btn.closest('.view-cart').find('.wrapper-cart-summary').load(urlSummary, function() {
 								cbj(document).trigger('cbViewInjected');
@@ -71,15 +72,20 @@ define(['cbj', 'cbj.bootstrap'], function(cbj) {
 			});
 
 			cbj(document).on('click', '.view-cart .trigger-show-position-details', function() {
-				var row = cbj(this).closest('.position-row');
-				var positionId = row.data('position-id');
-				cbrequire(['cbj.bootstrap'], function() {
-					cbj('#cart-position-' + positionId + ' .modal').modal();
-				});
+				let row = cbj(this).closest('.position-row');
+				let positionId = row.data('position-id');
+				let modal = new bootstrap.Modal(cbj('#cart-position-' + positionId + ' .modal').get(0));
+				if (modal) {
+					modal.show();
+				}
 			});
 
 			cbj(document).on('click', '.view-cart .trigger-close-modal', function() {
-				cbj(this).closest('.modal').modal('hide');
+				let btn = cbj(this);
+				let modal = bootstrap.Modal.getInstance(btn.closest('.modal').get(0));
+				if (modal) {
+					modal.hide();
+				}
 			});
 
 			cbj(document).on('click', '.trigger-checkout-cart', function(event) {
@@ -91,7 +97,7 @@ define(['cbj', 'cbj.bootstrap'], function(cbj) {
 				cbj('.button-copy-product, .button-edit-product, .button-remove-product, .trigger-edit-quantity, .trigger-remove-position').hide();
 
 
-				var cartId = cbj(this).closest('.view-cart').data('cart-id');
+				let cartId = cbj(this).closest('.view-cart').data('cart-id');
 
 				cbrequire(['configbox/server'], function(server) {
 
@@ -123,11 +129,18 @@ define(['cbj', 'cbj.bootstrap'], function(cbj) {
 		},
 
 		initCartPageEach: function() {
-			cbj('*[data-toggle=popover]').popover({
+			const options = {
 				trigger 	: 'focus',
 				delay		: 200,
 				html		: true,
 				customClass	: 'cb-popover'
+			};
+			const popoverTriggerList = document.querySelectorAll('*[data-toggle=popover]');
+			popoverTriggerList.forEach(function(trigger) {
+				if (!trigger.dataset.bsContent) {
+					options.content = trigger.dataset.content;
+				}
+				new bootstrap.Popover(trigger, options);
 			});
 		}
 

@@ -1,18 +1,21 @@
 /**
  * @module configbox/customerform
  */
-define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
+define(['cbj', 'bootstrap', 'cbj.chosen'], function(cbj, bootstrap) {
 
 	"use strict";
 
 	/**
 	 * @exports configbox/customerform
 	 */
-	var module = {
+	let module = {
 
 		initCustomerFormEach: function() {
 
-			cbj('.view-customerform .cb-popover').popover();
+			cbj('.view-customerform .cb-popover').each(function() {
+				new bootstrap.Popover(this, {});
+			})
+
 
 			cbj('.view-customerform .chosen-dropdown').chosen({
 				disable_search_threshold: 10
@@ -35,16 +38,16 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 
 						cbj(this).data('got-toggled', true);
 
-						var customerFields = cbj(this).closest('.view-customerform').data('customer-fields');
-						var formType = cbj(this).closest('.view-customerform').find('#form_type').val();
+						let customerFields = cbj(this).closest('.view-customerform').data('customer-fields');
+						let formType = cbj(this).closest('.view-customerform').find('#form_type').val();
 
 						// Copy info over from billing
-						for (var key in customerFields) {
+						for (let key in customerFields) {
 							if (customerFields.hasOwnProperty(key)) {
-								var obj = customerFields[key];
+								let obj = customerFields[key];
 								if (obj['show_' + formType] == '1') {
 									if (cbj('#'+obj.field_name).length && cbj('#billing'+obj.field_name).length) {
-										var billingFieldValue = cbj('#billing'+obj.field_name).val();
+										let billingFieldValue = cbj('#billing'+obj.field_name).val();
 										cbj('input[name='+obj.field_name+']').val(billingFieldValue);
 									}
 								}
@@ -62,7 +65,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 
 			// Checking the box 'I have an account' makes the login box appear (and vice versa)
 			cbj(document).on('change', '.recurring-customer-login #show-login', function() {
-				var loginBox = cbj(this).closest('.recurring-customer-login').find('.login-wrapper').show();
+				let loginBox = cbj(this).closest('.recurring-customer-login').find('.login-wrapper').show();
 				if (cbj(this).prop('checked') === true) {
 					loginBox.show();
 				}
@@ -82,13 +85,13 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 				// Add the spinner to the button
 				cbj(this).addClass('processing');
 
-				var wrapper = cbj(this).closest('.recurring-customer-login');
+				let wrapper = cbj(this).closest('.recurring-customer-login');
 
 				// Reset any feedback
 				wrapper.find('.feedback').text('');
 
-				var username = wrapper.find('.input-username').val();
-				var password = wrapper.find('.input-password').val();
+				let username = wrapper.find('.input-username').val();
+				let password = wrapper.find('.input-password').val();
 
 				cbrequire(['configbox/server'], function (server) {
 
@@ -105,7 +108,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 							}
 							else {
 								cbj(document).trigger('cbLogin');
-								var refreshUrl = wrapper.closest('.view-customerform').data('view-url');
+								let refreshUrl = wrapper.closest('.view-customerform').data('view-url');
 								wrapper.closest('.view-customerform').load(refreshUrl, function() {
 									cbj(document).trigger('cbViewInjected');
 								});
@@ -123,7 +126,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 			cbj(document).on('click', '.recurring-customer-login .trigger-recover-password', function() {
 
 				// Copy the email address from login-box over to recover box
-				var email = cbj(this).closest('.login-wrapper').find('.input-username').val();
+				let email = cbj(this).closest('.login-wrapper').find('.input-username').val();
 				if (email) {
 					cbj(this).closest('.recurring-customer-login').find('.recover-box .input-username').val(email);
 				}
@@ -162,10 +165,10 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 				cbj(this).addClass('processing');
 
 				// Get the email address from the form
-				var email = cbj(this).closest('.recover-box').find('.input-username').val();
+				let email = cbj(this).closest('.recover-box').find('.input-username').val();
 
 				// Get a reference to the box wrapper
-				var wrapper = cbj(this).closest('.recurring-customer-login');
+				let wrapper = cbj(this).closest('.recurring-customer-login');
 
 				// Reset any feedback
 				wrapper.find('.feedback').text('');
@@ -210,11 +213,11 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 				cbj(this).addClass('processing');
 
 				// Get the email address from the form
-				var code = cbj(this).closest('.change-password-box').find('.input-verification').val();
-				var password = cbj(this).closest('.change-password-box').find('.input-new-password').val();
+				let code = cbj(this).closest('.change-password-box').find('.input-verification').val();
+				let password = cbj(this).closest('.change-password-box').find('.input-new-password').val();
 
 				// Get a reference to the box wrapper
-				var wrapper = cbj(this).closest('.recurring-customer-login');
+				let wrapper = cbj(this).closest('.recurring-customer-login');
 
 				// Reset any feedback
 				wrapper.find('.feedback').text('');
@@ -235,7 +238,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 								});
 							}
 							else {
-								var refreshUrl = wrapper.closest('.view-customerform').data('view-url');
+								let refreshUrl = wrapper.closest('.view-customerform').data('view-url');
 								cbj(document).trigger('cbLogin');
 								wrapper.closest('.view-customerform').load(refreshUrl, function() {
 									cbj(document).trigger('cbViewInjected');
@@ -260,10 +263,10 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 				}
 
 				// Prepare the wrapper for convenience
-				var wrapper = cbj(this).closest('.recurring-customer-login');
+				let wrapper = cbj(this).closest('.recurring-customer-login');
 
 				// See what's the origin, afterwards check in which box we're in
-				var origin = cbj(event.target);
+				let origin = cbj(event.target);
 
 				if (origin.closest('.login-box').length !== 0) {
 					wrapper.find('.trigger-login').trigger('click');
@@ -288,13 +291,13 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 				cbj(this).trigger('chosen:updated');
 
 				// Get the selected ID
-				var countryId = parseInt(cbj(this).val());
+				let countryId = parseInt(cbj(this).val());
 
 				// Get the ID of the state dropdown
-				var stateSelectId = cbj(this).data('state-select-id');
+				let stateSelectId = cbj(this).data('state-select-id');
 
 				// Get the connected state dropdown
-				var stateDropdown = cbj('#' + stateSelectId);
+				let stateDropdown = cbj('#' + stateSelectId);
 
 				// If there is no state dropdown, stop doing things
 				if (stateDropdown.length === 0) {
@@ -347,13 +350,13 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 				cbj(this).trigger('chosen:updated');
 
 				// Get the selected ID
-				var stateId = parseInt(cbj(this).val());
+				let stateId = parseInt(cbj(this).val());
 
 				// Get the ID of the state dropdown
-				var countySelectId = cbj(this).data('county-select-id');
+				let countySelectId = cbj(this).data('county-select-id');
 
 				// Get the connected county dropdown
-				var countyDropdown = cbj('#' + countySelectId);
+				let countyDropdown = cbj('#' + countySelectId);
 
 				// If there is none, stop doing things
 				if (countyDropdown.length === 0) {
@@ -405,13 +408,13 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 				cbj(this).trigger('chosen:updated');
 
 				// Get the selected ID
-				var countyId = parseInt(cbj(this).val());
+				let countyId = parseInt(cbj(this).val());
 
 				// Get the ID of the state dropdown
-				var citySelectId = cbj(this).data('city-select-id');
+				let citySelectId = cbj(this).data('city-select-id');
 
 				// Get the city dropdown
-				var cityDropdown = cbj('#' + citySelectId);
+				let cityDropdown = cbj('#' + citySelectId);
 
 				if (cityDropdown.length === 0) {
 					return;
@@ -423,7 +426,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 					// Mark it as not used
 					cityDropdown.closest('.customer-field').addClass('uses-textfield-instead');
 					// Get the CSS class part for the city text field
-					var textField = citySelectId.replace('_id', '');
+					let textField = citySelectId.replace('_id', '');
 					// Remove the unused mark - this should make the city text field input appear
 					cityDropdown.closest('.view-customerform').find('.customer-field-'+textField).removeClass('uses-dropdown-instead');
 					return;
@@ -445,7 +448,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 								// Mark it as not used
 								cityDropdown.closest('.customer-field').addClass('uses-textfield-instead');
 								// Get the CSS class part for the city text field
-								var textField = citySelectId.replace('_id', '');
+								let textField = citySelectId.replace('_id', '');
 								// Remove the unused mark - this should make the city text field input appear
 								cityDropdown.closest('.view-customerform').find('.customer-field-' + textField).removeClass('uses-dropdown-instead');
 								return;
@@ -455,7 +458,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 							cityDropdown.closest('.customer-field').removeClass('has-no-data uses-textfield-instead');
 
 							// Get the CSS class part for the city text field..
-							var cityFieldName = citySelectId.replace('_id', '');
+							let cityFieldName = citySelectId.replace('_id', '');
 							// .. empty the value in city text field
 							cbj('#' + cityFieldName).val('');
 							// ..and hide the text field block
@@ -479,7 +482,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 
 		getCustomerFormData: function() {
 
-			var customerData = {};
+			let customerData = {};
 
 			// Loop through all inputs and collect customer data
 			cbj('.kenedo-view.view-customerform :input').each(function(i, item) {
@@ -512,7 +515,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 			if (customerData.samedelivery === '1') {
 				cbj.each(customerData, function(fieldName, value) {
 					if (fieldName.indexOf('billing') === 0) {
-						var pendant = fieldName.substr(7);
+						let pendant = fieldName.substr(7);
 
 						if (typeof(customerData[pendant]) !== 'undefined') {
 							customerData[pendant] = value;
@@ -536,10 +539,10 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 			cbj('.view-customerform .customer-field:visible').removeClass('invalid').addClass('valid');
 
 			// Set flags for fields with issues, set the issue message
-			for (var i in issues) {
+			for (let i in issues) {
 				if (issues.hasOwnProperty(i)) {
 					cbj('.customer-field-'+issues[i].fieldName).removeClass('valid').addClass('invalid');
-					cbj('.customer-field-'+issues[i].fieldName).find('.validation-tooltip').data('content', issues[i].message);
+					cbj('.customer-field-'+issues[i].fieldName).find('.validation-tooltip').data('message', issues[i].message);
 				}
 			}
 
@@ -554,7 +557,7 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 		removeValidationIssues : function() {
 			// Remove any css flags for invalid fields
 			cbj('.view-customerform .customer-field:visible').removeClass('invalid').removeClass('valid');
-			cbj('.view-customerform .validation-tooltip').data('content', '');
+			cbj('.view-customerform .validation-tooltip').data('message', '');
 			module.initValidationTooltips();
 		},
 
@@ -565,15 +568,16 @@ define(['cbj', 'cbj.chosen', 'cbj.bootstrap'], function(cbj) {
 
 			cbj('.validation-tooltip').each(function() {
 				// ..and init the popovers (doing some settings unless instructed otherwise in data attributes)
-				var settings = {
-					// content:	cbj(this).data('message'),
-					placement: (typeof (cbj(this).data('placement')) !== 'undefined') ? cbj(this).data('placement') : 'top',
-					trigger: (typeof (cbj(this).data('trigger')) !== 'undefined') ? cbj(this).data('trigger') : 'hover',
-					delay: (typeof (cbj(this).data('delay')) !== 'undefined') ? cbj(this).data('delay') : 200,
-					html: (typeof (cbj(this).data('html')) !== 'undefined') ? cbj(this).data('html') : true
+				let settings = {
+					customClass: 'cb-content validation-tooltip',
+					animation: false,
+					trigger: 'hover',
+					html: (typeof (cbj(this).data('html')) !== 'undefined') ? cbj(this).data('html') : true,
+					content: cbj(this).data('message') || '',
 				};
 
-				cbj(this).popover(settings);
+				new bootstrap.Popover(cbj(this).get(0), settings);
+
 			});
 
 		}

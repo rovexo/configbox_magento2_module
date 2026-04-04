@@ -11,6 +11,10 @@
 	font-size:14px;
 }
 
+.cb-content .form-control {
+	height:unset;
+}
+
 /* Joomla admin CSS changes - START */
 #submenu-box {
 	display:none;
@@ -34,6 +38,13 @@ div#element-box div.m {
 
 .view-admin {
 	margin-top:25px;
+	padding-top:20px;
+	color:#000;
+}
+
+.view-admin .modal-content {
+	background:#fff;
+	color:#000;
 }
 
 body.admin.com_configbox {
@@ -367,8 +378,6 @@ body.modal-open #adminmenuwrap {
 
 /* KENEDO ADMIN - START */
 
-
-
 .cb-content .kenedo-hidden-fields {
 	height:1px;
 }
@@ -386,14 +395,10 @@ body.modal-open #adminmenuwrap {
 	line-height: 1.42857143;
 	color: #555555;
 	background: #ffffff none;
-	border: 1px solid #cccccc;
+	border: var(--bs-border-width) solid var(--bs-border-color);
 	border-radius: 0;
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-}
-
-.cb-content .input-group-text {
-	font-size:14px;
 }
 
 .cb-content .backend-button-small {
@@ -416,33 +421,71 @@ body.modal-open #adminmenuwrap {
 	border:1px solid #999;
 }
 
+.cb-content .kenedo-title-and-tasks {
+	display:flex;
+	align-items:center;
+	gap:20px;
+	margin-bottom:10px;
+}
+
 .cb-content .kenedo-page-title {
-	margin:0px;
-	padding:0;
-	text-align:left;
+	flex:1;
+	margin:0;
+	font-size:2rem;
 	color:#025A8D;
-	font-size: 22px;
-	line-height: 36px;
 }
 
-.cb-content .kenedo-listing-form .kenedo-page-title {
-	float:left;
-	margin-bottom:10px;
+.cb-content #view-adminoptionassignment .kenedo-page-title {
+	margin-bottom:20px;
 }
 
-.cb-content .kenedo-listing-form .tasks-and-filters {
-	float:right;
-	margin-bottom:10px;
+.cb-content .kenedo-filters {
+	display:flex;
+	flex-wrap:wrap;
+	gap:10px;
+	align-items:self-end;
+	justify-content: flex-end;
+	margin:10px 0;
+}
+
+.cb-content .kenedo-filters .form-control {
+	margin-bottom:0;
+}
+
+.cb-content .kenedo-filters .input-group .btn {
+	border-radius:0;
+	border-color:var(--bs-border-color);
+}
+
+.cb-content .intra-listing .kenedo-tasks .btn {
+	padding-top:2px;
+	padding-bottom:2px;
+}
+
+.cb-content .kenedo-filter {
+	max-width:200px;
+}
+
+.cb-content .trigger-order-list {
+	text-decoration: none;
+}
+
+.cb-content ul.kenedo-task-list {
+	margin:0;
+	padding:0;
+	list-style:none;
+	display:flex;
+	gap:5px;
 }
 
 .cb-content .intra-listing .kenedo-page-title {
 	font-size:1em;
-	margin-top:0px;
-	margin-bottom:0px;
-	padding-top:0px;
+	margin-top:0;
+	margin-bottom:0;
+	padding-top:0;
 	clear:both;
-	height:0px;
-	line-height:0px;
+	height:0;
+	line-height:0;
 	visibility:hidden;
 }
 
@@ -456,8 +499,8 @@ body.modal-open #adminmenuwrap {
 
 .cb-content .intra-listing .kenedo-listing-form {
 	background:none;
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 }
 
 .view-admin .configbox-modals .modal-content {
@@ -471,86 +514,12 @@ body.modal-open #adminmenuwrap {
 	}
 }
 
-.cb-content .kenedo-tabs {
-	margin: 10px 0px 15px 0px;
-	clear:both;
-}
-
-.cb-content .kenedo-tab-list {
-	margin:0px;
-	padding:0px;
-	list-style: none;
-	display:table;
-	border-radius:5px;
-	border:1px solid #ddd;
-}
-
-.cb-content .kenedo-tab-list li {
-	margin:0px!important;
-	padding:0px!important;
-	background:#fff;
-	float:left!important;
-	border-right:1px solid #ddd;
-}
-
-.cb-content .kenedo-tab-list li.active,
-.cb-content .kenedo-tab-list li:hover {
-	background:#efefff;
-}
-
-.cb-content .kenedo-tab-list li:first-child {
-	border-top-left-radius:5px;
-	border-bottom-left-radius:5px;
-}
-
-.cb-content .kenedo-tab-list li:last-child {
-	border-top-right-radius:5px;
-	border-bottom-right-radius:5px;
-	border-right:none;
-}
-
-.cb-content .kenedo-tab-list a {
-	font-weight:bold;
-	padding:5px 10px;
-	display:block;
-	text-decoration:none;
-}
-
-.cb-content .kenedo-filters {
-	float:right;
-}
-
-.cb-content .kenedo-tasks,
-.cb-content .kenedo-filters {
-	margin-bottom:5px;
-}
-
-.cb-content .kenedo-filter {
-	margin-bottom:5px;
-	width:200px;
-}
-
-@media (min-width: 768px) {
-	.cb-content .kenedo-filter {
-		margin-right:10px;
-
-	}
-	.cb-content .kenedo-filter:last-child {
-		margin-right:0;
-	}
-}
-
 .cb-content .kenedo-filter select {
 	max-width:160px;
 	background-color: rgb(248,248,248);
 	color:#333;
 	line-height:25px;
 	height:27px;
-}
-
-.cb-content .kenedo-listing-form .kenedo-tasks,
-.cb-content .kenedo-details-form .kenedo-listing-form .kenedo-tasks {
-	float:right;
 }
 
 .cb-content .kenedo-details-form .kenedo-tasks {
@@ -563,17 +532,6 @@ body.modal-open #adminmenuwrap {
 
 .cb-content .kenedo-details-form.show-help .help-text {
 	display:block;
-}
-
-.cb-content .kenedo-task-list {
-	margin:0px;
-	padding:0px;
-	list-style: none;
-}
-
-.cb-content .kenedo-task-list li {
-	float:left;
-	margin-left:10px;
 }
 
 .cb-content .kenedo-listing {
@@ -768,14 +726,14 @@ body.modal-open #adminmenuwrap {
 }
 
 .cb-content .property-group {
-	margin:20px 0px 10px;
+	margin:10px 0;
 	clear:both;
 	border:none;
-	padding:0px;
+	padding:0;
 }
 
 .cb-content .property-group:last-child {
-	margin-bottom:0px;
+	margin-bottom:0;
 }
 
 .cb-content .property-group-legend {
@@ -870,6 +828,7 @@ body.modal-open #adminmenuwrap {
 
 .cb-content .kenedo-property.property-type-childentries {
 	width:auto;
+	margin:20px 0;
 }
 
 .cb-content .kenedo-property.property-type-translatable {
@@ -930,13 +889,18 @@ width ourselves
 	margin-bottom: 10px;
 }
 
+.cb-content .property-type-translatable .translations .translation {
+	display:unset;
+}
+
 .cb-content .property-type-translatable .translations .translation-label {
 	float:none;
 	display:block;
-	margin:0px 0px 4px;
-	padding:0px;
+	margin:0 0 4px;
+	padding:0;
 	font-weight:bold;
 	font-size:inherit;
+	width:unset;
 }
 
 .cb-content .property-type-translatable .translations .translation-label .kenedo-popup {
@@ -957,23 +921,15 @@ width ourselves
 	color:#333;
 	clear:none;
 	float:none;
-	margin:0px;
-	min-width:0px;
+	margin:0;
+	min-width:0;
 }
 
 .cb-content .property-type-translatable .language-switchers .language-switcher.active {
 	background:#fff;
 	color:#000;
-	position:relative;
-	bottom:-1px;
 	padding-top:6px;
 	box-shadow:none;
-	font-weight:bold;
-}
-
-.cb-content .property-type-translatable .language-switchers .language-switcher.active span {
-	position:relative;
-	bottom:1px;
 }
 
 .cb-content .property-type-translatable .translations.text-area {
@@ -1044,7 +1000,6 @@ width ourselves
 .cb-content .property-type-file .file-upload-field {
 	display: block;
 	width: 100%;
-	height: 16px;
 	line-height: 14px;
 }
 
@@ -1135,7 +1090,7 @@ width ourselves
 	display: inline-block;
 	border: 1px solid #ccc;
 	width: calc(50% - 5px);
-	margin-right:5px;
+	margin:0 5px 0 0;
 	line-height: 29px;
 	padding: 2px 5px 1px;
 	text-align: center;
@@ -1250,9 +1205,10 @@ select.join-select,
 	float: none;
 	clear: none;
 	display: inline;
-	margin: 0px 0;
+	margin: 0;
 	line-height:inherit;
 	font-size:inherit;
+	color:inherit;
 }
 
 body>#footer {
@@ -2768,6 +2724,11 @@ body>#footer {
 	width: calc(100% - 100px)!important;
 }
 
+.view-adminpostinstall .cube {
+	background:#fff;
+	color:#000;
+}
+
 .view-adminpostinstall h2 {
 	margin: 0;
 	padding: 0;
@@ -2778,7 +2739,12 @@ body>#footer {
 }
 
 .view-adminpostinstall .form-group select {
-	width:100%;
+	width: 100%;
+	background-color: #fff;
+	border-color: #ccc;
+	color: #000;
+	height: 35px;
+	padding-left: 8px;
 }
 
 .view-adminpostinstall .form-group label {
@@ -2923,4 +2889,13 @@ body>#footer {
 
 .cb-content .arrow:after {
 	background:none;
+}
+
+.cb-content .tox-tinymce .tox-promotion {
+	display:none;
+}
+
+.cb-content .tox-tinymce {
+	border-radius:0;
+	border:1px solid #eee;
 }

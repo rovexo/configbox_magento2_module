@@ -7,7 +7,7 @@
 	// ConfigboxViewHelper::addAmdLoader() about more details on how we deal with requireJS.
 
 	// Prepare the app config object (see info below)
-	var appConfig = {};
+	let appConfig = {};
 
 	// On the requireJS script tag we made a data attribute with settings from the server
 	// This serves as the 'gateway' for passing server data without using a separate xhr call
@@ -23,11 +23,14 @@
 	}
 
 	// Prepare the configuration object for requireJS
-	var configuration = {
+	let configuration = {
 
-		// Context makes sure we don't clash too much with other software using requireJS
+		// Context will minimize interoperability problems with other software using requireJS
 		context: 'CB',
 
+		waitSeconds: 30,
+
+		// This comes from KenedoPlatform::getUrlAssets
 		baseUrl: appConfig.urlSystemAssets,
 
 		// For cache busting
@@ -49,18 +52,20 @@
 			'configbox/admin': 				'javascript/admin',
 			'configbox/ruleEditor': 		'javascript/rule-editor',
 			'configbox/calcEditor': 		'javascript/calc-editor',
+			'configbox/productTree': 		'javascript/productTree',
 			// Watch out with jQuery - we changed the JS file a bit. We changed the define call to make it register unnamed
 			// Also, we made it not write itself in the global scope (see comments with 'rovexo')
-			'cbj': 							'kenedo/external/jquery-3.4.1/jquery',
+			'cbj': 							'kenedo/external/jquery-3.7.1/jquery',
 			// All the plugins got wrapped in a define requiring cbj, jqueryUI's define call was changed to require cbj
 			'cbj.ui': 						'kenedo/external/jquery.ui-1.12.1/jquery-ui',
-			'cbj.bootstrap': 				'kenedo/external/bootstrap-4.6.0/js/bootstrap.bundle',
+			'bootstrap': 					'kenedo/external/bootstrap-5.3.8/js/bootstrap.bundle',
+			'cbj.bootstrap':				'javascript/cbj.bootstrap',
 			'cbj.chosen': 					'kenedo/external/jquery.chosen-1.8.7/chosen.jquery',
 			'cbj.colorbox': 				'kenedo/external/jquery.colorbox-1.6.4/jquery.colorbox',
 			'cbj.dragtable':				'kenedo/external/jquery.dragtable-3.0.0/jquery.dragtable',
-            'cbj.spectrum':				    'kenedo/external/jquery.spectrum-1.8.0/spectrum',
+            'cbj.spectrum':				    'kenedo/external/jquery.spectrum-2.0.10/spectrum',
 			'cbj.touchpunch':			    'kenedo/external/jquery.ui.touch-punch-0.2.3/jquery.ui.touch-punch',
-			'tinyMCE':						'kenedo/external/tinymce-5.7.1/tinymce'
+			'tinyMCE':						'kenedo/external/tinymce-6.8.6/tinymce'
 		},
 
 		// As per CM's documentation, we use packages (makes editor mode JS files load properly without surprises)
@@ -81,7 +86,7 @@
 
 	// With a customization function one can add shims (see ConfigboxViewHelper::getAmdLoaderJs)
 	if (appConfig.customShims) {
-		for (var shim in appConfig.customShims) {
+		for (let shim in appConfig.customShims) {
 			if (appConfig.customShims.hasOwnProperty(shim)) {
 				configuration.shim[shim] = appConfig.customShims[shim];
 			}
@@ -90,7 +95,7 @@
 
 	// With a customization function one can add custom paths (see ConfigboxViewHelper::getAmdLoaderJs)
 	if (appConfig.customPaths) {
-		for (var path in appConfig.customPaths) {
+		for (let path in appConfig.customPaths) {
 			if (appConfig.customPaths.hasOwnProperty(path)) {
 				configuration.paths[path] = appConfig.customPaths[path];
 			}
@@ -99,7 +104,7 @@
 
 	// Change path config to use min files if settings say so
 	if (appConfig.useMinifiedJs) {
-		for (var i in configuration.paths) {
+		for (let i in configuration.paths) {
 			if (configuration.paths.hasOwnProperty(i)) {
 
 				// Ignore certain paths
@@ -126,7 +131,7 @@
 	// Init require, get our own cbrequire to stay within context
 	window.cbrequire = require.config(configuration);
 
-	var dependencies = ['cbj'];
+	let dependencies = ['cbj'];
 	if (appConfig.requireCustomJs === true) {
 		dependencies.push('configbox/custom/custom');
 	}
@@ -134,10 +139,10 @@
 	// 'Start' the app (load the customization JS file as well)
 	window.cbrequire(dependencies, function(cbj) {
 
-		var doneModuleCalls = [];
+		let doneModuleCalls = [];
 
 		// Keeping track of existing stylesheets (since we can't trust the head data due to sheet concatenators)
-		var existingStylesheets = [];
+		let existingStylesheets = [];
 
 		// This tag gets added by KenedoPlatform::renderOutput
 		if (cbj('#cb-stylesheets').length !== 0) {
@@ -148,19 +153,16 @@
 		 * This function looks into all .cb-content wrappers and checks if there are JS calls to make or CSS to load
 		 * @listens Event:cbViewInjected
 		 */
-		var onViewsInjected = function() {
+		let onViewsInjected = function() {
 
 			cbj('.cb-content:not(.view-processed)').each(function() {
 
-				var view = cbj(this);
-
-				// Finally, add a CSS class so subsequent calls won't process that view again
-				cbj(this).addClass('view-processed');
+				let view = cbj(this);
 
 				// Get data from view wrapper
-				var styleSheets = cbj(this).data('stylesheets');
-				var moduleCallsOnce = cbj(this).data('init-calls-once');
-				var moduleCallsEach = cbj(this).data('init-calls-each');
+				let styleSheets = cbj(this).data('stylesheets');
+				let moduleCallsOnce = cbj(this).data('init-calls-once');
+				let moduleCallsEach = cbj(this).data('init-calls-each');
 
 				// If there are stylesheet URLs, add them (unless they're already in the head)
 				if (styleSheets) {
@@ -184,7 +186,7 @@
 				}
 
 				// Prime moduleIds and calls (we will split the configbox/cart::initCartPage strings)
-				var moduleIds, calls = [];
+				let moduleIds, calls = [];
 
 				// First deal, with the one-off calls
 				// Make sure we're empty
@@ -194,7 +196,7 @@
 				// Loop through the module calls
 				cbj.each(moduleCallsOnce, function(i, moduleCall) {
 
-					var moduleId, call;
+					let moduleId, call;
 
 					// If we got a ::, then split between moduleId and call
 					if (moduleCall.split('::', 2).length === 2) {
@@ -213,10 +215,10 @@
 
 				});
 
-				// No the same for recurring init calls
+				// Now the same for recurring init calls
 				cbj.each(moduleCallsEach, function(i, moduleCall) {
 
-					var moduleId, call;
+					let moduleId, call;
 
 					if (moduleCall.split('::', 2).length === 2) {
 						moduleId = moduleCall.split('::', 2)[0];
@@ -239,13 +241,13 @@
 					cbrequire(moduleIds, function() {
 
 						// Make a copy of the function arguments for later
-						var args = arguments;
+						let args = arguments;
 
 						// Loop through all calls
 						cbj.each(calls, function(i, call) {
 
 							// Put the module call string together again for next step
-							var moduleCall = moduleIds[i] + '::' + calls[i];
+							let moduleCall = moduleIds[i] + '::' + calls[i];
 
 							// If the call is part of a one-off, then check if we did it already
 							if (moduleCallsOnce.indexOf(moduleCall) !== -1) {
@@ -283,6 +285,9 @@
 					});
 
 				}
+
+				// Finally, add a CSS class so subsequent calls won't process that view again
+				view.addClass('view-processed');
 
 			});
 

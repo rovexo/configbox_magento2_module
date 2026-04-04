@@ -8,23 +8,22 @@ define(['cbj'], function(cbj) {
 	/**
 	 * @exports configbox/productlisting
 	 */
-	var module = {
+	let module = {
 
 		initListingPage: function() {
 
 			// Clicks on the 'show reviews' button
 			cbj(document).on('click', '.trigger-show-reviews', function() {
 
-				// Start loading boostrap JS ahead of time (might save a bit of time)
-				cbrequire(['cbj.bootstrap']);
-
-				var url = cbj(this).data('url-reviews');
-				var modal = cbj('#reviews-modal');
+				let url = cbj(this).data('url-reviews');
+				let modal = cbj('#reviews-modal');
 
 				modal.find('.modal-content').load(url, function() {
-					cbrequire(['cbj.bootstrap'], function() {
-						// Get the modal open
-						modal.modal();
+					cbrequire(['bootstrap'], function(bootstrap) {
+
+						const modalEl = modal.get(0);
+						new bootstrap.Modal(modalEl).show();
+
 						// Run the view injected functions
 						cbj(document).trigger('cbViewInjected');
 					});
@@ -36,16 +35,15 @@ define(['cbj'], function(cbj) {
 			// Clicks on the 'add reviews' button
 			cbj(document).on('click', '.trigger-show-review-form-modal', function() {
 
-				// Start loading boostrap JS ahead of time (might save a bit of time)
-				cbrequire(['cbj.bootstrap']);
-
-				var url = cbj(this).data('url-reviews');
-				var modal = cbj('#reviews-modal');
+				let url = cbj(this).data('url-reviews');
+				let modal = cbj('#reviews-modal');
 
 				modal.find('.modal-content').load(url, function() {
-					cbrequire(['cbj.bootstrap'], function() {
-						// Get the modal open
-						modal.modal();
+					cbrequire(['bootstrap'], function(bootstrap) {
+
+						const modalEl = modal.get(0);
+						new bootstrap.Modal(modalEl).show();
+
 						// Run the view injected functions
 						cbj(document).trigger('cbViewInjected');
 					});

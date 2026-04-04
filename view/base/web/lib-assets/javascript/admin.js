@@ -1,14 +1,15 @@
 /**
  * @module configbox/admin
  */
-define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], function(cbj, kenedo, server) {
+define(['cbj', 'kenedo', 'configbox/server', 'bootstrap', 'cbj.ui',], function(cbj, kenedo, server, bootstrap) {
 
 	"use strict";
 
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * @exports configbox/admin
 	 */
-	var admin = {
+	let admin = {
 
 		initBackendOnce: function() {
 			privateMethods.registerLegacyReadyFunctions();
@@ -34,7 +35,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 	};
 
-	var privateMethods = {
+	let privateMethods = {
 
 		initHtmlEditors : function(view) {
 
@@ -45,8 +46,8 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 					try {
 
 						view.find('.kenedo-html-editor.not-initialized').each(function() {
-							var target = cbj(this);
-							var element = cbj(this).get(0);
+							let target = cbj(this);
+							let element = cbj(this).get(0);
 							target.removeClass('not-initialized');
 
 							tinyMCE.init({
@@ -55,12 +56,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 								base_url : server.config.urlTinyMceBase,
 								suffix : (server.config.useMinifiedJs === true) ? '.min' : '',
 								target	 	: element,
-								plugins		: [
-									"advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
-									"searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking",
-									"save table directionality emoticons template paste"
-								],
-								toolbar		: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons",
+								plugins		: "advlist code autolink link image lists charmap preview anchor pagebreak searchreplace visualblocks visualchars code fullscreen nonbreaking table directionality emoticons",
 								template_external_list_url 	: "js/template_list.js",
 								external_link_list_url 		: "js/link_list.js",
 								external_image_list_url 	: "js/image_list.js",
@@ -121,7 +117,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 		initKenedoForm: function(view) {
 
 			cbj(view).find('.kenedo-details-form').each(function() {
-				var record = cbj(this).closest('.kenedo-details-form').data('record');
+				let record = cbj(this).closest('.kenedo-details-form').data('record');
 				kenedo.setPropertyVisibility(null, record, cbj(this));
 				cbj(this).on('kenedoFormDataChanged', kenedo.setPropertyVisibility);
 			});
@@ -134,14 +130,14 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 			cbj(view).find('.kenedo-datepicker').each(function() {
 
-				var altField = cbj(this).closest('.kenedo-property').find('.form-control');
-				var value = altField.val();
+				let altField = cbj(this).closest('.kenedo-property').find('.form-control');
+				let value = altField.val();
 
 				if (value === '' || value === '0000-00-00' || value === '0000-00-00 00:00:00') {
 					value = null;
 				}
 
-				var params = {
+				let params = {
 					dateFormat: 'yy-mm-dd',
 					altFormat: 'yy-mm-dd',
 					altField: altField,
@@ -172,11 +168,11 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 				start: function() {
 
-					var list = cbj(this).closest('.kenedo-listing-form');
-					var paginationLimit = kenedo.getListParameter(list, 'limit');
+					let list = cbj(this).closest('.kenedo-listing-form');
+					let paginationLimit = parseInt(kenedo.getListParameter(list, 'limit'));
 
-					if (paginationLimit != 0) {
-						var feedback = cbj(this).find('.sort-handle:first').data('unset-pagination-text');
+					if (paginationLimit !== 0) {
+						let feedback = cbj(this).find('.sort-handle:first').data('unset-pagination-text');
 						if (feedback) {
 							alert(feedback);
 						}
@@ -189,14 +185,14 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 				update: function() {
 
-					var list = cbj(this).closest('.kenedo-listing-form');
-					var direction = kenedo.getListParameter(list, 'listing_order_dir');
+					let list = cbj(this).closest('.kenedo-listing-form');
+					let direction = kenedo.getListParameter(list, 'listing_order_dir');
 
 					// This will contain record ids and position numbers and gets sent as JSON to the server
-					var sortingData = {};
+					let sortingData = {};
 
 					// This will be used to set position numbers (gets in- or decremented)
-					var positionNumber;
+					let positionNumber;
 					if (direction.toLowerCase() === 'asc') {
 						positionNumber = 10;
 					}
@@ -206,7 +202,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 					list.find('.item-row').each(function() {
 
-						var recordId = cbj(this).data('item-id');
+						let recordId = cbj(this).data('item-id');
 
 						sortingData[recordId] = positionNumber;
 
@@ -219,8 +215,8 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 					});
 
-					var controller = kenedo.getListParameter(list, 'controller');
-					var updates = JSON.stringify(sortingData);
+					let controller = kenedo.getListParameter(list, 'controller');
+					let updates = JSON.stringify(sortingData);
 
 					// Storing position will be delayed with timeouts so that frantic sorters can't flood the server
 					if (privateMethods.sortingTimeout) {
@@ -254,13 +250,13 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 		hasClipboardRule: function() {
 			return this.getClipboardRule() !== null;
 		},
-		
+
 		setClipboardRule: function(ruleData) {
 			window.sessionStorage.setItem('clipboardRule', JSON.stringify(ruleData));
 		},
 
 		getClipboardRule: function() {
-			var json = window.sessionStorage.getItem('clipboardRule');
+			let json = window.sessionStorage.getItem('clipboardRule');
 
 			if (json === null) {
 				return null;
@@ -310,7 +306,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 		initGroupPriceFunctionality: function() {
 
 			cbj(document).on('click', '.property-type-groupPrice .trigger-show-group-picker', function() {
-				var wrapper = cbj(this).closest('.property-type-groupPrice');
+				let wrapper = cbj(this).closest('.property-type-groupPrice');
 
 				wrapper.find('.group-picker').show();
 				wrapper.find('.trigger-show-group-picker').hide();
@@ -318,7 +314,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 			});
 
 			cbj(document).on('click', '.property-type-groupPrice .trigger-cancel-group-picker', function() {
-				var wrapper = cbj(this).closest('.property-type-groupPrice');
+				let wrapper = cbj(this).closest('.property-type-groupPrice');
 				wrapper.find('.group-picker').hide();
 				wrapper.find('.trigger-show-group-picker').show();
 				wrapper.find('.trigger-cancel-group-picker').hide();
@@ -326,16 +322,16 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 			/**
 			 * Price overrides ultimately get stored as a JSON string holding all overrides. This function gets called
-			 * after any change made in the UI. It collects the overrides in the HTML and writes a the JSON in the
+			 * after any change made in the UI. It collects the overrides in the HTML and puts it as JSON in the
 			 * hidden input (with class .overrides-json-data).
 			 * It also hides the 'add override' button if there are overrides for all groups (and vice versa).
 			 *
 			 * @param {jQuery} wrapper jQuery object with the property
 			 */
-			var updateOverrideJson = function(wrapper) {
+			let updateOverrideJson = function(wrapper) {
 
 				// Prime the array to store, loop through all overrides to collect group ids and prices..
-				var overrides = [];
+				let overrides = [];
 				wrapper.find('.price-overrides .price-override').each(function(){
 					overrides.push({
 						'group_id': cbj(this).data('group-id'),
@@ -347,8 +343,8 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 				wrapper.find('.overrides-json-data').val(window.JSON.stringify(overrides));
 
 				// Check if we got overrides for all groups already - if so, hide the 'add override' button (or show it)
-				var countOverrides = overrides.length;
-				var countGroups = wrapper.find('.trigger-add-price-override').length;
+				let countOverrides = overrides.length;
+				let countGroups = wrapper.find('.trigger-add-price-override').length;
 
 				if (countOverrides >= countGroups) {
 					wrapper.find('.trigger-show-group-picker').addClass('hidden');
@@ -360,14 +356,14 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 			};
 
 			cbj(document).on('keyup change', '.property-type-groupPrice .chosen-price', function() {
-				var wrapper = cbj(this).closest('.property-type-groupPrice');
+				let wrapper = cbj(this).closest('.property-type-groupPrice');
 				updateOverrideJson(wrapper);
 			});
 
 			cbj(document).on('click', '.property-type-groupPrice .trigger-add-price-override', function() {
-				var wrapper = cbj(this).closest('.property-type-groupPrice');
-				var groupId = cbj(this).data('group-id');
-				var html = cbj(wrapper).find('.price-override-blueprint .price-override').clone();
+				let wrapper = cbj(this).closest('.property-type-groupPrice');
+				let groupId = cbj(this).data('group-id');
+				let html = cbj(wrapper).find('.price-override-blueprint .price-override').clone();
 
 				html.attr('data-group-id', groupId);
 				html.find('.group-title-field').text(cbj(this).text());
@@ -381,8 +377,8 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 			});
 
 			cbj(document).on('click', '.property-type-groupPrice .trigger-remove-price-override', function() {
-				var wrapper = cbj(this).closest('.property-type-groupPrice');
-				var groupId = cbj(this).closest('.price-override').data('group-id');
+				let wrapper = cbj(this).closest('.property-type-groupPrice');
+				let groupId = cbj(this).closest('.price-override').data('group-id');
 
 				cbj(this).closest('.price-override').remove();
 				wrapper.find('.group-picker .group-id-' + groupId).removeClass('used-already');
@@ -396,7 +392,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 		initCalculationOverrideFunctionality: function() {
 
 			cbj(document).on('click', '.property-type-calculationOverride .trigger-show-group-picker', function() {
-				var wrapper = cbj(this).closest('.property-type-calculationOverride');
+				let wrapper = cbj(this).closest('.property-type-calculationOverride');
 
 				wrapper.find('.group-picker').show();
 				wrapper.find('.trigger-show-group-picker').hide();
@@ -404,7 +400,7 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 			});
 
 			cbj(document).on('click', '.property-type-calculationOverride .trigger-cancel-group-picker', function() {
-				var wrapper = cbj(this).closest('.property-type-calculationOverride');
+				let wrapper = cbj(this).closest('.property-type-calculationOverride');
 				wrapper.find('.group-picker').hide();
 				wrapper.find('.trigger-show-group-picker').show();
 				wrapper.find('.trigger-cancel-group-picker').hide();
@@ -412,16 +408,16 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 			/**
 			 * Price overrides ultimately get stored as a JSON string holding all overrides. This function gets called
-			 * after any change made in the UI. It collects the overrides in the HTML and writes a the JSON in the
+			 * after any change made in the UI. It collects the overrides in the HTML and writes the JSON in the
 			 * hidden input (with class .overrides-json-data).
 			 * It also hides the 'add override' button if there are overrides for all groups (and vice versa).
 			 *
 			 * @param {jQuery} wrapper jQuery object with the property
 			 */
-			var updateOverrideJson = function(wrapper) {
+			let updateOverrideJson = function(wrapper) {
 
 				// Prime the array to store, loop through all overrides to collect group ids and prices..
-				var overrides = [];
+				let overrides = [];
 				wrapper.find('.price-overrides .price-override').each(function(){
 					overrides.push({
 						'group_id': parseInt(cbj(this).data('group-id')),
@@ -433,8 +429,8 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 				wrapper.find('.overrides-json-data').val(window.JSON.stringify(overrides));
 
 				// Check if we got overrides for all groups already - if so, hide the 'add override' button (or show it)
-				var countOverrides = overrides.length;
-				var countGroups = wrapper.find('.trigger-add-price-override').length;
+				let countOverrides = overrides.length;
+				let countGroups = wrapper.find('.trigger-add-price-override').length;
 
 				if (countOverrides >= countGroups) {
 					wrapper.find('.trigger-show-group-picker').addClass('hidden');
@@ -446,28 +442,28 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 			};
 
 			cbj(document).on('change', '.property-type-calculationOverride .calculation-select', function() {
-				var wrapper = cbj(this).closest('.property-type-calculationOverride');
+				let wrapper = cbj(this).closest('.property-type-calculationOverride');
 				updateOverrideJson(wrapper);
 			});
 
 			cbj(document).on('click', '.property-type-calculationOverride .trigger-add-price-override', function() {
 
 				// Get stuff
-				var wrapper = cbj(this).closest('.property-type-calculationOverride');
-				var groupId = cbj(this).data('group-id');
-				var html = cbj(wrapper).find('.price-override-blueprint .price-override').clone();
+				let wrapper = cbj(this).closest('.property-type-calculationOverride');
+				let groupId = cbj(this).data('group-id');
+				let html = cbj(wrapper).find('.price-override-blueprint .price-override').clone();
 
 				// Set group ID and the label
 				html.attr('data-group-id', groupId);
 				html.find('.group-title-field').text(cbj(this).text());
 
 				// Get a new ID and name for the select tag (cbj.chosen seems to need that)
-				var randomId = 'dummy-id-for-chosen-' + Math.floor(Math.random() * 10000);
+				let randomId = 'dummy-id-for-chosen-' + Math.floor(Math.random() * 10000);
 
-				var select = html.find('.calculation-select');
+				let select = html.find('.calculation-select');
 				select.attr('id', randomId).attr('name', randomId);
 
-				var joinLink = html.find('.trigger-open-join-link-modal');
+				let joinLink = html.find('.trigger-open-join-link-modal');
 				joinLink.attr('data-name-form-control', joinLink.attr('data-name-form-control').replace('PLACEHOLDER_CALC_SELECT', randomId));
 
 				// Put the thing in place
@@ -493,8 +489,8 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 			});
 
 			cbj(document).on('click', '.property-type-calculationOverride .trigger-remove-price-override', function() {
-				var wrapper = cbj(this).closest('.property-type-calculationOverride');
-				var groupId = cbj(this).closest('.price-override').data('group-id');
+				let wrapper = cbj(this).closest('.property-type-calculationOverride');
+				let groupId = cbj(this).closest('.price-override').data('group-id');
 
 				cbj(this).closest('.price-override').remove();
 				wrapper.find('.group-picker .group-id-' + groupId).removeClass('used-already');
@@ -509,9 +505,9 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 			cbj(document).on('change', '.kenedo-details-form .calculation-select', function() {
 
-				var select = cbj(this);
-				var selectedId = parseInt(select.val());
-				var joinLink = select.closest('.select-and-links').find('.trigger-open-join-link-modal');
+				let select = cbj(this);
+				let selectedId = parseInt(select.val());
+				let joinLink = select.closest('.select-and-links').find('.trigger-open-join-link-modal');
 
 				joinLink.data('selected-id', selectedId);
 
@@ -526,39 +522,48 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 			cbj(document).on('click', '.trigger-open-join-link-modal', function() {
 
-				var btn = cbj(this);
+				let btn = cbj(this);
 
 				if (btn.hasClass('disabled')) {
 					return;
 				}
 				btn.addClass('disabled');
 
-				var wrapper = btn.closest('.select-and-links');
-				var parentForm = btn.closest('.kenedo-details-form');
+				let wrapper = btn.closest('.select-and-links');
+				let parentForm = btn.closest('.kenedo-details-form');
 
-				var modalParent = cbj('.view-admin .configbox-modals');
-				var modal = modalParent.children('.join-link-modal');
+				let modalParent = cbj('.view-admin .configbox-modals');
+				let modal = modalParent.children('.join-link-modal');
 
 				if (modal.length === 0) {
 
 					modal = wrapper.find('.join-link-modal').appendTo(modalParent);
 
-					var modalsToShowAfterHide;
+					let nativeModal = modal.get(0);
 
-					modal.on('show.bs.modal', function() {
-						modalsToShowAfterHide = cbj(this).siblings('.modal:visible');
-						modalsToShowAfterHide.modal('hide');
+					let modalsToShowAfterHide;
+
+					nativeModal.addEventListener('show.bs.modal', function() {
+						modalsToShowAfterHide = cbj(this).siblings('.modal:visible')
+						modalsToShowAfterHide.each(function() {
+							let native = cbj(this).get(0);
+							bootstrap.Modal.getInstance(native).hide();
+						});
 					});
 
-					modal.on('hidden.bs.modal', function() {
-						modalsToShowAfterHide.modal('show');
-						// Reset 'modals to show' collection so they won't open again after next visit
-						modalsToShowAfterHide = cbj('.some-div-that-does-not-exists');
+					nativeModal.addEventListener('hidden.bs.modal', function() {
+						modalsToShowAfterHide.each(function() {
+							let native = cbj(this).get(0);
+							let bsModal = new bootstrap.Modal(native);
+							if (bsModal) {
+								bsModal.show();
+							}
+						});
 					});
 
 				}
 
-				var requestData = btn.data('request-data');
+				let requestData = btn.data('request-data');
 				requestData.id = btn.data('selected-id');
 
 				server.injectHtml(
@@ -570,31 +575,36 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 						btn.removeClass('disabled');
 
-						modal.modal({keyboard:false});
+						let nativeModal = modal.get(0);
+						let bsModal = new bootstrap.Modal(nativeModal, {keyboard: false});
+						if (bsModal) {
+							bsModal.show();
+						}
 
 						cbj('html, body').animate({
 							scrollTop: 0
 						}, 100);
 
-						var calcForm = modal.find('.kenedo-details-form');
+						let calcForm = modal.find('.kenedo-details-form');
 
 						/**
 						 * @listens event:cbFormTaskResponseReceived
 						 */
 						calcForm.on('cbFormTaskResponseReceived', function(event, xhr, taskInfo) {
-
+							let response;
 							if (taskInfo.task !== 'store' && taskInfo.task !== 'apply') {
 								return;
 							}
 
 							try {
-								var response = JSON.parse(xhr.responseText);
+								response = JSON.parse(xhr.responseText);
 							}
 							catch(e) {
 								console.warn('Could not parse JSON response. Exception message follows. ResponseText was: "' + xhr.responseText + '"');
 								console.warn(e);
 								return;
 							}
+
 
 							if (response.success === true && response.wasInsert === true) {
 
@@ -605,9 +615,9 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 								});
 
 								// Select the new calculation in the connected dropdown
-								var nameFormControl = btn.data('name-form-control');
+								let nameFormControl = btn.data('name-form-control');
 								if (nameFormControl) {
-									var targetSelect = parentForm.find('select[name=' + nameFormControl + ']');
+									let targetSelect = parentForm.find('select[name=' + nameFormControl + ']');
 									targetSelect.val(response.data.id).trigger('chosen:updated').trigger('change');
 								}
 							}
@@ -628,9 +638,9 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 			});
 
 			cbj(document).on('click', '.trigger-copy-rule', function() {
-				var wrapper = cbj(this).closest('.rule-wrapper');
+				let wrapper = cbj(this).closest('.rule-wrapper');
 
-				var clipboardData = {
+				let clipboardData = {
 					productId: wrapper.find('.data-field').data('product-id'),
 					ruleJson: wrapper.find('.data-field').val(),
 					ruleHtml: wrapper.find('.rule-html').html()
@@ -647,11 +657,11 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 					return;
 				}
 
-				var clipboardData = privateMethods.getClipboardRule();
+				let clipboardData = privateMethods.getClipboardRule();
 
-				var wrapper = cbj(this).closest('.rule-wrapper');
+				let wrapper = cbj(this).closest('.rule-wrapper');
 
-				var productId = wrapper.find('.data-field').data('product-id');
+				let productId = wrapper.find('.data-field').data('product-id');
 
 				if (parseInt(clipboardData.productId) !== parseInt(productId)) {
 					window.alert('Rule in clipboard is for another product');
@@ -666,31 +676,40 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 			cbj(document).on('click', '.trigger-edit-rule', function() {
 
-				var btn = cbj(this);
-				var dataField = btn.closest('.kenedo-property').find('.data-field');
-				var url = dataField.data('editor-url');
+				let btn = cbj(this);
+				let dataField = btn.closest('.kenedo-property').find('.data-field');
+				let url = dataField.data('editor-url');
 
-				var modalParent = cbj('.view-admin .configbox-modals');
-				var modal = modalParent.children('.rule-editor-modal');
+				let modalParent = cbj('.view-admin .configbox-modals');
+				let modal = modalParent.children('.rule-editor-modal');
 
 				if (modal.length === 0) {
 
 					modal = btn.closest('.kenedo-property').find('.rule-editor-modal').appendTo(modalParent);
-					var modalsToShowAfterHide;
+					let modalsToShowAfterHide;
+					let nativeModal = modal.get(0);
 
-					modal.on('show.bs.modal', function() {
+					nativeModal.addEventListener('show.bs.modal', function() {
 						modalsToShowAfterHide = cbj(this).siblings('.modal:visible');
-						modalsToShowAfterHide.modal('hide');
+						modalsToShowAfterHide.each(function() {
+							let native = cbj(this).get(0);
+							bootstrap.Modal.getInstance(native).hide();
+						});
 					});
 
-					modal.on('hidden.bs.modal', function() {
-						modalsToShowAfterHide.modal('show');
-						// Reset 'modals to show' collection so they won't open again after next visit
-						modalsToShowAfterHide = cbj('.asdfsadfsadf');
+					nativeModal.addEventListener('hidden.bs.modal', function() {
+						modalsToShowAfterHide.each(function() {
+							let native = cbj(this).get(0);
+							let bsModal = new bootstrap.Modal(native);
+							if (bsModal) {
+								bsModal.show();
+							}
+						});
 					});
+
 				}
 
-				var data = {
+				let data = {
 					usageIn: dataField.data('usage-in'),
 					productId: dataField.data('product-id'),
 					pageId: dataField.data('page-id'),
@@ -699,16 +718,16 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 				modal.find('.modal-content').html('');
 
-				modal.one('show.bs.modal', function() {
+				let nativeModal = modal.get(0);
+
+				nativeModal.addEventListener('show.bs.modal', function() {
 					modal.find('.modal-content').load(url, data, function() {
 						modal.data('form-property', btn.closest('.kenedo-property'));
 						cbj(document).trigger('cbViewInjected');
-
 					});
-				});
+				}, { once: true });
 
-				modal.modal();
-
+				new bootstrap.Modal(nativeModal).show();
 
 			});
 
@@ -742,14 +761,14 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 				// We load the stylesheet ahead of time because init goes bad if the file isn't loaded yet.
 				cbrequire(['configbox/server'], function(server) {
-					var url = server.config.urlSystemAssets + '/kenedo/external/codemirror-5.30.0/lib/codemirror.css?version=' + server.config.cacheVar;
+					let url = server.config.urlSystemAssets + '/kenedo/external/codemirror-5.30.0/lib/codemirror.css?version=' + server.config.cacheVar;
 					kenedo.addStylesheet(url);
 				});
 
 				cbrequire(['codemirror', 'codemirror/mode/htmlmixed/htmlmixed', 'codemirror/mode/php/php', 'codemirror/mode/javascript/javascript'], function(CodeMirror) {
 
 					// Create the CodeMirror editor with content of template-code
-					var codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("template-code"), {
+					let codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("template-code"), {
 						lineNumbers: true,
 						matchBrackets: true,
 						mode: "php",
@@ -773,9 +792,9 @@ define(['cbj', 'kenedo', 'configbox/server', 'cbj.ui', 'cbj.bootstrap'], functio
 
 		runLegacyReadyFunctions: function(view) {
 
-			var viewId;
+			let viewId;
 
-			var viewIdData = view.data('view-id');
+			let viewIdData = view.data('view-id');
 
 			if (viewIdData) {
 				viewId = 'view-' + viewIdData;

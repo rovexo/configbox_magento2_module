@@ -1,22 +1,19 @@
 /**
  * @module configbox/ruleEditor
  */
-define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
+define(['cbj', 'kenedo', 'configbox/server', 'bootstrap'], function(cbj, kenedo, server, bootstrap) {
 	"use strict";
 
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * @exports configbox/ruleEditor
 	 */
-	var module = {
+	let module = {
 
 		initRuleEditor: function() {
 
 			// Create a jQuery function for making an HTML element a dropzone
-			cbj.fn.makeDropZone = function() {
-
-				if (typeof(arguments[0]) !== 'undefined') {
-					var draggedItem = arguments[0];
-				}
+			cbj.fn.makeDropZone = function(draggedItem) {
 
 				this.droppable({
 
@@ -25,7 +22,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 					drop: function( event, ui ) {
 
 						// Get a clone of the draggable and remove draggable attributes
-						var newItem = cbj(ui.helper).clone(true,true).removeClass('ui-draggable ui-draggable-dragging').removeAttr('style');
+						let newItem = cbj(ui.helper).clone(true,true).removeClass('ui-draggable ui-draggable-dragging').removeAttr('style');
 
 						// Remove the original item if moved inside the item
 						if (typeof(draggedItem) !== 'undefined' && draggedItem.closest('.rule-area').length) {
@@ -60,7 +57,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 							cbj(this).hide();
 						}
 
-						var ruleArea = cbj(this).closest('.view-adminruleeditor').find('.rule-area');
+						let ruleArea = cbj(this).closest('.view-adminruleeditor').find('.rule-area');
 
 						// Remove any pre-existing drop-areas (unless it's the initial area that shows when no
 						// conditions are present)
@@ -71,7 +68,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 
 						if (ruleArea.find('.drop-area').length === 0) {
 
-							var dropZoneMarkup = '<span class="drop-area">&nbsp;</span>';
+							let dropZoneMarkup = '<span class="drop-area">&nbsp;</span>';
 
 							// In case there are no conditions in the rule area yet, just add the drop-zone HTML
 							if (ruleArea.find('.item').length === 0) {
@@ -79,8 +76,8 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 							}
 							else {
 
-								var dropZoneSelectorBefore = '';
-								var dropZoneSelectorAfter = '';
+								let dropZoneSelectorBefore = '';
+								let dropZoneSelectorAfter = '';
 
 								// We figure out where to put drop zones by preparing CSS selectors, later using
 								// jQuery before and after to insert them where needed.
@@ -119,7 +116,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 
 					stop: function() {
 
-						var ruleArea = cbj(this).closest('.view-adminruleeditor').find('.rule-area');
+						let ruleArea = cbj(this).closest('.view-adminruleeditor').find('.rule-area');
 
 						if (ruleArea.find('.item').length !== 0) {
 							ruleArea.find('.drop-area').remove();
@@ -216,14 +213,16 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 
 			// Cancel button
 			cbj('.view-adminruleeditor').on('click', '.button-cancel', function() {
-				cbj(this).closest('.modal').modal('hide').find('.modal-content').html('');
+				let nativeModal = cbj(this).closest('.modal');
+				bootstrap.Modal.getInstance(nativeModal).hide();
+				cbj(this).closest('.modal').find('.modal-content').html('');
 			});
 
 			// Tab functionality for switching between condition types
 			cbj('.view-adminruleeditor').on('click', '.picker-tab', function() {
 
-				var view = cbj(this).closest('.view-adminruleeditor');
-				var panelId = cbj(this).attr('id');
+				let view = cbj(this).closest('.view-adminruleeditor');
+				let panelId = cbj(this).attr('id');
 				cbj(this).addClass('selected-tab').siblings().removeClass('selected-tab');
 
 				view.find('.picker-panels .' + panelId).addClass('selected-panel').siblings().removeClass('selected-panel');
@@ -243,7 +242,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 				// Remove any existing pickers
 				cbj('.condition .operator-picker').remove();
 
-				var operatorNode;
+				let operatorNode;
 
 				// Questions with predefined answers get the 'is' and 'is not' operator, rest the full lower than etc.
 				if (cbj(this).closest('.condition').data('field') === 'selectedOption.id') {
@@ -271,7 +270,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 
 			// Functionality for choosing an operator for a condition
 			cbj('.view-adminruleeditor').on('click', '.rule-area .operator, #condition-picker .operator', function() {
-				var operator = cbj(this).data('operator');
+				let operator = cbj(this).data('operator');
 				cbj(this).closest('.condition').data('operator', operator).attr('data-operator', operator);
 				cbj(this).closest('.condition-operator').text(cbj(this).text() + ' ');
 			});
@@ -282,13 +281,13 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			cbj('.view-adminruleeditor').on('change', '.page-filter select', function() {
 
 				// Get the selected page ID
-				var pageId = parseInt(cbj(this).val());
+				let pageId = parseInt(cbj(this).val());
 
 				// Hide all questions
 				cbj('.question-picker li').removeClass('shown').removeClass('selected');
 
 				// Prepare the CSS selector for shown questions
-				var selector;
+				let selector;
 
 				if (pageId === 0) {
 					selector = '.question-picker .question-list li';
@@ -311,7 +310,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			// Key up for the text filter
 			cbj('#question-filter').keyup(function() {
 
-				var filterText = cbj(this).val();
+				let filterText = cbj(this).val();
 				filterText = filterText.trim();
 				filterText = filterText.toLowerCase();
 
@@ -321,7 +320,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 
 				cbj('.question-picker li.shown').each(function() {
 
-					var text = cbj(this).text();
+					let text = cbj(this).text();
 					text = text.trim();
 					text = text.toLowerCase();
 
@@ -338,7 +337,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			// Clicks on the left questions make the conditions for that question appear
 			cbj('.view-adminruleeditor').on('click', '.question-list li', function() {
 
-				var questionId = cbj(this).data('question-id');
+				let questionId = cbj(this).data('question-id');
 				cbj('#answer-group-' + questionId).show().siblings().hide();
 
 				// Make the shown items draggable
@@ -354,29 +353,29 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 
 		storeRule : function() {
 
-			var view = cbj(this).closest('.view-adminruleeditor');
+			let view = cbj(this).closest('.view-adminruleeditor');
 
 			// Remove all drop areas (just in case there are any left)
 			view.find('.rule-area .drop-area').remove();
 
-			var property = view.closest('.rule-editor-modal').data('form-property');
+			let property = view.closest('.rule-editor-modal').data('form-property');
 
 			// Prepare the rule JSON
-			var jsonRule = '';
+			let jsonRule = '';
 
 			// Get the rule's conditions
-			var ruleItems = module.getRuleItems(view.find('.rule-area'));
+			let ruleItems = module.getRuleItems(view.find('.rule-area'));
 
 			// If we deal with a negated rule, we add a 'negation' item to the rule
-			var isNegated = (view.find('.rule-is-negated').val() === '1');
+			let isNegated = (view.find('.rule-is-negated').val() === '1');
 
-			var ruleHtmlPrefix;
+			let ruleHtmlPrefix;
 
 			if (isNegated === true && ruleItems.length > 0) {
 
 				ruleHtmlPrefix = view.find('.rule-is-negated option[value=1]').data('prefix-rule-text');
 
-				var ruleItem = {
+				let ruleItem = {
 					type: 'negation'
 				};
 				ruleItems.unshift(ruleItem);
@@ -393,7 +392,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			}
 
 			// Write the rule json string to the input field of the form
-			var dataField = property.find('.data-field');
+			let dataField = property.find('.data-field');
 			dataField.val(jsonRule).trigger('change');
 
 			// Make the edit controls of the rule into display-only fields
@@ -403,14 +402,14 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			});
 
 			// Copy the rule HTML over to the display wrapper of the parent's form (To show the rule)
-			var html = '';
+			let html = '';
 			if (isNegated) {
 				html += ruleHtmlPrefix + ' ';
 			}
 			html += view.find('.rule-area').html();
 
 			// Copy the rule HTML over to the display wrapper of the parent's form (To show the rule)
-			var ruleHtml = property.find('.rule-html');
+			let ruleHtml = property.find('.rule-html');
 			ruleHtml.html(html);
 
 			if (jsonRule) {
@@ -421,7 +420,9 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			}
 
 			// Close the modal window
-			cbj(this).closest('.modal').modal('hide').find('.modal-content').html('');
+			let nativeModal = cbj(this).closest('.modal');
+			bootstrap.Modal.getInstance(nativeModal).hide();
+			cbj(this).closest('.modal').find('.modal-content').html('');
 
 		},
 
@@ -432,10 +433,10 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 		 */
 		getRuleItems : function (parentHtml) {
 
-			var items = [];
-			var itemsHtml = parentHtml.children('.item');
+			let items = [];
+			let itemsHtml = parentHtml.children('.item');
 
-			for (var i in itemsHtml) {
+			for (let i in itemsHtml) {
 				if (itemsHtml.hasOwnProperty(i) === true) {
 
 					// jQuery has things like lastObject in there which aren't what we need.
@@ -443,23 +444,23 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 						continue;
 					}
 
-					var itemData = module.getItemMetadata(cbj(itemsHtml[i]));
+					let itemData = module.getItemMetadata(cbj(itemsHtml[i]));
 
 					switch(itemData.type) {
 
-						// On brackets we recurse into the child html
+						// On brackets, we recurse into the child html
 						case 'bracket':
 							items[i] = module.getRuleItems(cbj(itemsHtml[i]));
 							break;
 
-						// For functions we check for parameters and them in there are any
+						// For functions, we check for parameters and them in there are any
 						case 'function':
 
-							var parameters = cbj(itemsHtml[i]).find('.parameter');
+							let parameters = cbj(itemsHtml[i]).find('.parameter');
 
 							// Go into the function's parameter items (they got the same structure as regular conditions)
 							itemData.parameters = [];
-							for (var p in parameters) {
+							for (let p in parameters) {
 								if (parameters.hasOwnProperty(p)) {
 
 									// jQuery has things like lastObject in there which aren't what we need.
@@ -468,7 +469,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 									}
 
 									// Get the items of the parameters..
-									var parameterItems = module.getRuleItems(cbj(parameters[p]));
+									let parameterItems = module.getRuleItems(cbj(parameters[p]));
 									// ..and push them into the meta data
 									itemData.parameters.push(parameterItems);
 
@@ -497,13 +498,13 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 		 */
 		getItemMetadata: function(item) {
 
-			var metaData = cbj(item).data();
+			let metaData = cbj(item).data();
 
 			// This will contain all meta data for the item
-			var returnData = {};
+			let returnData = {};
 
 			// Loop through all data attributes and put them in the return var
-			for (var i in metaData) {
+			for (let i in metaData) {
 				if (metaData.hasOwnProperty(i)) {
 
 					// Skip jQueryUI's data attribute
@@ -519,7 +520,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			cbj(item).find('.input').each(function() {
 
 				// Get the meta data key
-				var key = cbj(this).data('data-key');
+				let key = cbj(this).data('data-key');
 
 				// Inputs that have no data-key must be some helper inputs - we skip them
 				if (!key) {
@@ -527,12 +528,12 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 				}
 
 				// Get the value
-				var inputValue = cbj(this).val();
+				let inputValue = cbj(this).val();
 
 				// Unless it is empty, see if it looks like a number and normalize the decimal symbol to a comma
 				if (inputValue !== '') {
-					var testValue = inputValue.replace(server.config.decimalSymbol, '.');
-					var possibleNumber = Number(testValue);
+					let testValue = inputValue.replace(server.config.decimalSymbol, '.');
+					let possibleNumber = Number(testValue);
 					// Check if that made sense, if so, use the number version
 					if (isNaN(possibleNumber) === false) {
 						inputValue = possibleNumber;
@@ -552,10 +553,10 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 		 */
 		putInBrackets : function() {
 
-			var view = cbj(this).closest('.view-adminruleeditor');
+			let view = cbj(this).closest('.view-adminruleeditor');
 
 			// Make some unique ID..
-			var newId = Math.ceil(Math.random() * 20000);
+			let newId = Math.ceil(Math.random() * 20000);
 			// ..and add it as ID attribute to the created bracket HTML
 			view.find('.selected').wrapAll('<span class="item bracket" data-type="bracket" id="bracket-' + newId + '" />');
 			// ..in order to reference to it for making it draggable
@@ -571,7 +572,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 		 */
 		removeSelectedItems: function() {
 
-			var view = cbj(this).closest('.view-adminruleeditor');
+			let view = cbj(this).closest('.view-adminruleeditor');
 
 			// Loop through all .selected items in the terms
 			view.find('.selected').each(function() {
@@ -596,9 +597,9 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 
 			// For any function parameters items that got removed, put a drop-area in their place
 			view.find('.rule-editor .parameter').each(function() {
-				var parameter = cbj(this);
+				let parameter = cbj(this);
 				if (parameter.find('.item').length === 0) {
-					var html = '<span class="parameter-drop-area">'+ parameter.data('parameter-name') +'</span>';
+					let html = '<span class="parameter-drop-area">'+ parameter.data('parameter-name') +'</span>';
 					parameter.html(html);
 				}
 			});
@@ -611,7 +612,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 		adjustTextFieldWidth: function() {
 
 			// Get the entered text (or the placeholder text if empty)
-			var text = (cbj(this).val() === '') ? cbj(this).attr('placeholder') : cbj(this).val();
+			let text = (cbj(this).val() === '') ? cbj(this).attr('placeholder') : cbj(this).val();
 
 			// Insert the text into the test span
 			cbj('#width-tester').text(text);
@@ -621,7 +622,7 @@ define(['cbj', 'kenedo', 'configbox/server'], function(cbj, kenedo, server) {
 			cbj('#width-tester').css('font-family',cbj(this).css('font-family'));
 
 			// Get the width of the tester span
-			var width = parseInt(cbj('#width-tester').css('width'));
+			let width = parseInt(cbj('#width-tester').css('width'));
 
 			if (width < 10) {
 				width = 10;

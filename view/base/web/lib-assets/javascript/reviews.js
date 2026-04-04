@@ -1,7 +1,7 @@
 /**
  * @module configbox/reviews
  */
-define(['cbj'], function(cbj) {
+define(['cbj', 'bootstrap'], function(cbj, bootstrap) {
 
 	"use strict";
 
@@ -14,7 +14,8 @@ define(['cbj'], function(cbj) {
 
 			// Clicks on the close modal button
 			cbj(document).on('click', '.trigger-close-modal', function() {
-				cbj(this).closest('.modal').modal('hide');
+				let modalEl = cbj(this).closest('.modal').get(0);
+				bootstrap.Modal.getInstance(modalEl).hide();
 			});
 
 			// Clicks on the 'toggle more' button
@@ -48,13 +49,15 @@ define(['cbj'], function(cbj) {
 
 			// Clicks on the close modal button
 			cbj(document).on('click', '.trigger-close-modal', function() {
-				cbj(this).closest('.modal').modal('hide');
+				let modalEl = cbj(this).closest('.modal').get(0);
+				bootstrap.Modal.getInstance(modalEl).hide();
 			});
 
 			// Clicks on 'cancel review'
 			cbj(document).on('click', '.trigger-cancel-review', function() {
 				if (cbj(this).closest('.view-reviewform').parent('.modal-content').length !== 0) {
-					cbj(this).closest('.modal').modal('hide');
+					let modalEl = cbj(this).closest('.modal').get(0);
+					bootstrap.Modal.getInstance(modalEl).hide();
 				}
 				cbj(this).closest('.view-reviews').find('.trigger-show-review-form').show();
 				cbj(this).closest('.wrapper-review-form').hide();

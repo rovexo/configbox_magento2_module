@@ -1,0 +1,1 @@
+function getjQuery() was changed to return null so that BS doesn't put plugins into 3rd party jQuery instances.
