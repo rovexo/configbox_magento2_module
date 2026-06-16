@@ -1,7 +1,7 @@
 {
     "name": "rovexo/configbox-magento2",
     "description": "N/A",
-    "version": "3.5.0",
+    "version": "3.5.1",
     "type": "magento2-module",
     "license": "proprietary",
     "config": {
@@ -10,7 +10,7 @@
     "require": {
         "php": "7.1.*|7.2.*|7.3.*|7.4.*|8.1.*|8.2.*|8.3.*|8.4.*|8.5.*",
         "magento/framework": "102 - 105",
-        "rovexo/configbox-php": "1.4.0"
+        "rovexo/configbox-php": "1.5.0"
     },
     "extra": {
         "internal-commit-hash": "babd4c3a246fc111501539438247eaaf95ce02d9",
